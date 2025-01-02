@@ -5,6 +5,8 @@ import Header from "./Header"
 import styled from "@emotion/styled"
 import Scripts from "src/layouts/RootLayout/Scripts"
 import useGtagEffect from "./useGtagEffect"
+import ProgressBar from "src/components/ProgressBar"
+
 import Prism from "prismjs/prism"
 import 'prismjs/components/prism-markup-templating.js'
 import 'prismjs/components/prism-markup.js'
@@ -57,6 +59,7 @@ const RootLayout = ({ children }: Props) => {
       {/* // TODO: replace react query */}
       {/* {metaConfig.type !== "Paper" && <Header />} */}
       <Header fullWidth={false} />
+      <ProgressBar /> {}
       <StyledMain>{children}</StyledMain>
     </ThemeProvider>
   )
