@@ -48,4 +48,4 @@ export type TCategories = {
   [category: string]: number
 }
 
-export type SchemeType = "light" | "dark"
+export type ThemeType = "dark" | "light"

@@ -1,4 +1,3 @@
-import { TCategories } from "src/types"
 import React from "react"
 import CategorySelect from "./CategorySelect"
 import OrderButtons from "./OrderButtons"

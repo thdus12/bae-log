@@ -31,7 +31,7 @@ const PinnedPosts: React.FC<Props> = ({ q }) => {
       </div>
       <div className="my-2">
         {filteredPosts.map((post) => (
-          <PostCard key={post.slug} data={post} />
+          <PostCard key={post.slug} data={post} showMedia={false} />
         ))}
       </div>
     </StyledWrapper>
