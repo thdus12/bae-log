@@ -10,6 +10,7 @@ const ProgressBar = () => {
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight
     const scrolled = (winScroll / height) * 100
+    console.log('Progress:', scrolled) // 디버깅용
     setWidth(scrolled)
   }
 

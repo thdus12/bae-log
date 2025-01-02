@@ -58,8 +58,8 @@ const RootLayout = ({ children }: Props) => {
       <Scripts />
       {/* // TODO: replace react query */}
       {/* {metaConfig.type !== "Paper" && <Header />} */}
-      <Header fullWidth={false} />
       <ProgressBar /> {}
+      <Header fullWidth={false} />
       <StyledMain>{children}</StyledMain>
     </ThemeProvider>
   )
