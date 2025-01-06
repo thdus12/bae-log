@@ -105,16 +105,20 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   .notion-collection-page-properties {
     display: none !important;
   }
+
   .notion-page {
     padding: 0;
   }
+
   .notion-list {
     width: 100%;
   }
+
   .notion-code {
     background-color: ${({ theme }) =>
       theme === "dark" ? "#2d2d2d" : "#f7f6f3"};
   }
+
   .notion {
     font-family: ${pretendard.style.fontFamily};
     color: ${({ theme }) =>
@@ -123,6 +127,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   /* 인라인 코드 스타일 추가 */
+
   .notion-inline-code {
     background-color: ${({ theme }) =>
       theme === "dark" ? "rgba(45,45,45)" : "rgba(247,246,243)"};
@@ -133,6 +138,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   /* Notion 색상별 인라인 코드 스타일 */
+
   .notion-gray_background .notion-inline-code {
     background: rgba(120, 119, 116, 0.1);
   }
@@ -164,7 +170,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   .notion-red_background .notion-inline-code {
     background: rgba(212, 76, 71, 0.1);
   }
-  
+
   .notion,
   .notion-text,
   .notion-quote,
@@ -276,8 +282,52 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   .notion-hr {
-    border-top: 1px solid rgba(55, 53, 47, 0.16);
+    border: none;
+    border-top: 1px solid rgba(55, 53, 47, 0.09);
+    margin: 2em 0;
   }
+
+  // 다크모드일 때
+  .dark-mode .notion-hr {
+    border-top-color: rgba(255, 255, 255, 0.13);
+  }
+
+  .notion-gray_background {
+    background-color: rgb(241, 241, 239);
+  }
+
+  .notion-brown_background {
+    background-color: rgb(244, 238, 238);
+  }
+
+  .notion-orange_background {
+    background-color: rgb(251, 236, 221);
+  }
+
+  .notion-yellow_background {
+    background-color: rgb(251, 243, 219);
+  }
+
+  .notion-green_background {
+    background-color: rgb(237, 243, 236);
+  }
+
+  .notion-blue_background {
+    background-color: rgb(231, 243, 248);
+  }
+
+  .notion-purple_background {
+    background-color: rgb(244, 240, 247);
+  }
+
+  .notion-pink_background {
+    background-color: rgb(249, 238, 243);
+  }
+
+  .notion-red_background {
+    background-color: rgb(253, 235, 236);
+  }
+
   .notion-table-of-contents {
     position: fixed;
     right: -75%;
