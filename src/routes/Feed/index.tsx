@@ -9,6 +9,7 @@ import ProfileCard from "./ProfileCard"
 import ContactCard from "./ContactCard"
 import PostList from "./PostList"
 import PinnedPosts from "./PostList/PinnedPosts"
+import CategoriesAndTags from "./CategoriesAndTags"
 
 const HEADER_HEIGHT = 73
 
@@ -25,14 +26,14 @@ const Feed: React.FC<Props> = () => {
           height: `calc(100vh - ${HEADER_HEIGHT}px)`,
         }}
       >
-        <TagList />
+        <CategoriesAndTags />
       </div>
       <div className="mid">
         <MobileProfileCard />
         <PinnedPosts q={q} />
         <SearchInput value={q} onChange={(e) => setQ(e.target.value)} />
         <div className="tags">
-          <TagList />
+          <CategoriesAndTags />
         </div>
         <FeedHeader />
         <PostList q={q} />
@@ -80,6 +81,7 @@ const StyledWrapper = styled.div`
 
     scrollbar-width: none;
     -ms-overflow-style: none;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -115,6 +117,7 @@ const StyledWrapper = styled.div`
   > .rt {
     scrollbar-width: none;
     -ms-overflow-style: none;
+
     &::-webkit-scrollbar {
       display: none;
     }
