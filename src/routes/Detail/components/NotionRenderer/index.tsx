@@ -233,7 +233,8 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
 
   .notion-hr {
     border-top: 1px solid rgba(55, 53, 47, 0.16);
-  }
+  }  
+  
   .notion-table-of-contents {
     position: fixed;
     right: -75%;
@@ -267,6 +268,56 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     span:hover {
       background-position: -100% 0;
     }
+  }
+
+  .notion-inline-code {
+    color: ${({ theme }) => (theme === "dark" ? "#ccc" : "rgb(17 24 39)")};
+    background-color: ${({ theme }) => (theme === "dark" ? "#2d2d2d" : "#f7f6f3")};
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  }
+
+  /* Notion의 각 색상별 인라인 코드 스타일 */
+  .notion-inline-code[style*="color: rgb(120, 119, 116)"] {
+    color: rgb(120, 119, 116);
+    background: rgba(120, 119, 116, 0.1);
+  }
+
+  .notion-inline-code[style*="color: rgb(159, 107, 83)"] {
+    color: rgb(159, 107, 83);
+    background: rgba(159, 107, 83, 0.1);
+  }
+
+  .notion-inline-code[style*="color: rgb(217, 115, 13)"] {
+    color: rgb(217, 115, 13);
+    background: rgba(217, 115, 13, 0.1);
+  }
+
+  .notion-inline-code[style*="color: rgb(68, 131, 97)"] {
+    color: rgb(68, 131, 97);
+    background: rgba(68, 131, 97, 0.1);
+  }
+
+  .notion-inline-code[style*="color: rgb(51, 126, 169)"] {
+    color: rgb(51, 126, 169);
+    background: rgba(51, 126, 169, 0.1);
+  }
+
+  .notion-inline-code[style*="color: rgb(144, 101, 176)"] {
+    color: rgb(144, 101, 176);
+    background: rgba(144, 101, 176, 0.1);
+  }
+
+  .notion-inline-code[style*="color: rgb(193, 76, 138)"] {
+    color: rgb(193, 76, 138);
+    background: rgba(193, 76, 138, 0.1);
+  }
+
+  .notion-inline-code[style*="color: rgb(212, 76, 71)"] {
+    color: rgb(212, 76, 71);
+    background: rgba(212, 76, 71, 0.1);
   }
 
   @media screen and (max-width: 1800px) {
