@@ -14,7 +14,7 @@ const Tag: React.FC<Props> = ({ children }) => {
   }
   return (
     <StyledWrapper onClick={() => handleClick(children)}>
-      {children.split("::")[2]}
+      {children}
     </StyledWrapper>
   )
 }
