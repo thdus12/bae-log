@@ -70,6 +70,7 @@ type StyledWrapperProps = {
 
 const NotionRenderer: FC<Props> = ({ recordMap }) => {
   const [scheme] = useScheme()
+  console.log('recordMap:', recordMap);
 
   useEffect(() => {
     const rootElement = document.documentElement
@@ -91,6 +92,7 @@ const NotionRenderer: FC<Props> = ({ recordMap }) => {
           Pdf,
           nextImage: Image,
           nextLink: Link,
+
         }}
         mapPageUrl={mapPageUrl}
       />
