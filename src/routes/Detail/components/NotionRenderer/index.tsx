@@ -126,71 +126,88 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     overflow-wrap: break-word;
   }
 
-  /* Text Colors */
-  .notion-gray {
-    color: rgb(120, 119, 116) !important;
-  }
-  .notion-brown {
-    color: rgb(159, 107, 83) !important;
-  }
-  .notion-orange {
-    color: rgb(217, 115, 13) !important;
-  }
-  .notion-yellow {
-    color: rgb(203, 145, 47) !important;
-  }
-  .notion-green {
-    color: rgb(68, 131, 97) !important;
-  }
-  .notion-blue {
-    color: rgb(51, 126, 169) !important;
-  }
-  .notion-purple {
-    color: rgb(144, 101, 176) !important;
-  }
-  .notion-pink {
-    color: rgb(193, 76, 138) !important;
-  }
-  .notion-red {
-    color: rgb(212, 76, 71) !important;
-  }
-
-  /* Background Colors */
-  .notion-gray_background {
-    background-color: rgb(241, 241, 239) !important;
-  }
-  .notion-brown_background {
-    background-color: rgb(244, 238, 238) !important;
-  }
-  .notion-orange_background {
-    background-color: rgb(251, 236, 221) !important;
-  }
-  .notion-yellow_background {
-    background-color: rgb(251, 243, 219) !important;
-  }
-  .notion-green_background {
-    background-color: rgb(237, 243, 236) !important;
-  }
-  .notion-blue_background {
-    background-color: rgb(231, 243, 248) !important;
-  }
-  .notion-purple_background {
-    background-color: rgb(244, 240, 247) !important;
-  }
-  .notion-pink_background {
-    background-color: rgb(249, 238, 243) !important;
-  }
-  .notion-red_background {
-    background-color: rgb(253, 235, 236) !important;
-  }
-
   /* 인라인 코드 기본 스타일 */
-  .notion-inline-code {
+  code {
+    background-color: ${({ theme }) =>
+      theme === "dark" ? "rgba(45,45,45)" : "rgba(247,246,243)"};
+    color: ${({ theme }) => (theme === "dark" ? "#ccc" : "rgb(17 24 39)")};
     padding: 0.2em 0.4em;
     border-radius: 3px;
     font-size: 0.9em;
-    background-color: ${({ theme }) =>
-      theme === "dark" ? "rgba(45,45,45)" : "rgba(247,246,243)"};
+  }
+
+  /* 텍스트 색상 */
+  code.gray {
+    color: rgb(120, 119, 116) !important;
+  }
+
+  code.brown {
+    color: rgb(159, 107, 83) !important;
+  }
+
+  code.orange {
+    color: rgb(217, 115, 13) !important;
+  }
+
+  code.yellow {
+    color: rgb(203, 145, 47) !important;
+  }
+
+  code.green {
+    color: rgb(68, 131, 97) !important;
+  }
+
+  code.blue {
+    color: rgb(51, 126, 169) !important;
+  }
+
+  code.purple {
+    color: rgb(144, 101, 176) !important;
+  }
+
+  code.pink {
+    color: rgb(193, 76, 138) !important;
+  }
+
+  code.red {
+    color: rgb(212, 76, 71) !important;
+  }
+
+  /* 배경 색상 */
+  code.gray_background {
+    background-color: rgb(241, 241, 239) !important;
+  }
+
+  code.brown_background {
+    background-color: rgb(244, 238, 238) !important;
+  }
+
+  code.orange_background {
+    background-color: rgb(251, 236, 221) !important;
+  }
+
+  code.yellow_background {
+    background-color: rgb(251, 243, 219) !important;
+  }
+
+  code.green_background {
+    background-color: rgb(237, 243, 236) !important;
+  }
+
+  code.blue_background {
+    background-color: rgb(231, 243, 248) !important;
+  }
+
+  code.purple_background {
+    background-color: rgb(244, 240, 247) !important;
+  }
+
+  code.pink_background {
+    background-color: rgb(249, 238, 243) !important;
+  }
+
+  code.red_background {
+    background-color: rgb(253, 235, 236) !important;
   }
 
   .notion,
