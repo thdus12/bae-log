@@ -119,15 +119,8 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       theme === "dark" ? "#2d2d2d" : "#f7f6f3"};
   }
 
-  .notion {
-    font-family: ${pretendard.style.fontFamily};
-    color: ${({ theme }) =>
-      theme === "dark" ? "rgb(209 213 219)" : "rgb(107 114 128);"};
-    overflow-wrap: break-word;
-  }
-
-  /* 인라인 코드 기본 스타일 */
-  .notion-text span code {
+  /* 기본 인라인 코드 스타일 */
+  .notion-inline-code {
     background-color: ${({ theme }) =>
       theme === "dark" ? "rgba(45,45,45)" : "rgba(247,246,243)"};
     padding: 0.2em 0.4em;
@@ -135,41 +128,82 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     font-size: 0.9em;
   }
 
-  /* 텍스트 색상이 있는 span의 code */
-  span[style*="color: rgb(120, 119, 116)"] code {
+  /* 텍스트 색상 */
+  .notion-gray .notion-inline-code {
+    color: rgb(120, 119, 116);
+  }
+
+  .notion-brown .notion-inline-code {
+    color: rgb(159, 107, 83);
+  }
+
+  .notion-orange .notion-inline-code {
+    color: rgb(217, 115, 13);
+  }
+
+  .notion-yellow .notion-inline-code {
+    color: rgb(203, 145, 47);
+  }
+
+  .notion-green .notion-inline-code {
+    color: rgb(68, 131, 97);
+  }
+
+  .notion-blue .notion-inline-code {
+    color: rgb(51, 126, 169);
+  }
+
+  .notion-purple .notion-inline-code {
+    color: rgb(144, 101, 176);
+  }
+
+  .notion-pink .notion-inline-code {
+    color: rgb(193, 76, 138);
+  }
+
+  .notion-red .notion-inline-code {
+    color: rgb(212, 76, 71);
+  }
+
+  /* 배경 색상 */
+  .notion-gray_background .notion-inline-code {
     background-color: rgb(241, 241, 239);
   }
 
-  span[style*="color: rgb(159, 107, 83)"] code {
+  .notion-brown_background .notion-inline-code {
     background-color: rgb(244, 238, 238);
   }
 
-  span[style*="color: rgb(217, 115, 13)"] code {
+  .notion-orange_background .notion-inline-code {
     background-color: rgb(251, 236, 221);
   }
 
-  span[style*="color: rgb(203, 145, 47)"] code {
+  .notion-yellow_background .notion-inline-code {
     background-color: rgb(251, 243, 219);
   }
 
-  span[style*="color: rgb(68, 131, 97)"] code {
+  .notion-green_background .notion-inline-code {
     background-color: rgb(237, 243, 236);
   }
 
-  span[style*="color: rgb(51, 126, 169)"] code {
+  .notion-blue_background .notion-inline-code {
     background-color: rgb(231, 243, 248);
   }
 
-  span[style*="color: rgb(144, 101, 176)"] code {
+  .notion-purple_background .notion-inline-code {
     background-color: rgb(244, 240, 247);
   }
 
-  span[style*="color: rgb(193, 76, 138)"] code {
+  .notion-pink_background .notion-inline-code {
     background-color: rgb(249, 238, 243);
   }
 
-  span[style*="color: rgb(212, 76, 71)"] code {
+  .notion-red_background .notion-inline-code {
     background-color: rgb(253, 235, 236);
+  }
+
+  .notion-teal_background .notion-inline-code {
+    background-color: rgb(221, 237, 234);
   }
 
   .notion,
