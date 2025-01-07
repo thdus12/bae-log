@@ -127,87 +127,49 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   /* 인라인 코드 기본 스타일 */
-  code {
+  .notion-text span code {
     background-color: ${({ theme }) =>
       theme === "dark" ? "rgba(45,45,45)" : "rgba(247,246,243)"};
-    color: ${({ theme }) => (theme === "dark" ? "#ccc" : "rgb(17 24 39)")};
     padding: 0.2em 0.4em;
     border-radius: 3px;
     font-size: 0.9em;
   }
 
-  /* 텍스트 색상 */
-  code.gray {
-    color: rgb(120, 119, 116) !important;
+  /* 텍스트 색상이 있는 span의 code */
+  span[style*="color: rgb(120, 119, 116)"] code {
+    background-color: rgb(241, 241, 239);
   }
 
-  code.brown {
-    color: rgb(159, 107, 83) !important;
+  span[style*="color: rgb(159, 107, 83)"] code {
+    background-color: rgb(244, 238, 238);
   }
 
-  code.orange {
-    color: rgb(217, 115, 13) !important;
+  span[style*="color: rgb(217, 115, 13)"] code {
+    background-color: rgb(251, 236, 221);
   }
 
-  code.yellow {
-    color: rgb(203, 145, 47) !important;
+  span[style*="color: rgb(203, 145, 47)"] code {
+    background-color: rgb(251, 243, 219);
   }
 
-  code.green {
-    color: rgb(68, 131, 97) !important;
+  span[style*="color: rgb(68, 131, 97)"] code {
+    background-color: rgb(237, 243, 236);
   }
 
-  code.blue {
-    color: rgb(51, 126, 169) !important;
+  span[style*="color: rgb(51, 126, 169)"] code {
+    background-color: rgb(231, 243, 248);
   }
 
-  code.purple {
-    color: rgb(144, 101, 176) !important;
+  span[style*="color: rgb(144, 101, 176)"] code {
+    background-color: rgb(244, 240, 247);
   }
 
-  code.pink {
-    color: rgb(193, 76, 138) !important;
+  span[style*="color: rgb(193, 76, 138)"] code {
+    background-color: rgb(249, 238, 243);
   }
 
-  code.red {
-    color: rgb(212, 76, 71) !important;
-  }
-
-  /* 배경 색상 */
-  code.gray_background {
-    background-color: rgb(241, 241, 239) !important;
-  }
-
-  code.brown_background {
-    background-color: rgb(244, 238, 238) !important;
-  }
-
-  code.orange_background {
-    background-color: rgb(251, 236, 221) !important;
-  }
-
-  code.yellow_background {
-    background-color: rgb(251, 243, 219) !important;
-  }
-
-  code.green_background {
-    background-color: rgb(237, 243, 236) !important;
-  }
-
-  code.blue_background {
-    background-color: rgb(231, 243, 248) !important;
-  }
-
-  code.purple_background {
-    background-color: rgb(244, 240, 247) !important;
-  }
-
-  code.pink_background {
-    background-color: rgb(249, 238, 243) !important;
-  }
-
-  code.red_background {
-    background-color: rgb(253, 235, 236) !important;
+  span[style*="color: rgb(212, 76, 71)"] code {
+    background-color: rgb(253, 235, 236);
   }
 
   .notion,
