@@ -16,29 +16,42 @@ const PostDetail: React.FC<Props> = () => {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const handleDownloadPDF = async () => {
-    if (!contentRef.current) return
+    console.log('PDF 다운로드 시도');
+    if (!contentRef.current) {
+      console.log('contentRef가 없음');
+      return;
+    }
 
-    const content = contentRef.current
-    const pdf = new jsPDF('p', 'pt', 'a4')
+    try {
+      const content = contentRef.current;
+      console.log('PDF 변환 시작');
 
-    const canvas = await html2canvas(content, {
-      scale: 2,
-      useCORS: true,
-      logging: false
-    })
-    const imgWidth = 595.28 // A4 width in points
-    const imgHeight = (canvas.height * imgWidth) / canvas.width
+      const pdf = new jsPDF('p', 'pt', 'a4');
+      const canvas = await html2canvas(content, {
+        scale: 2,
+        useCORS: true,
+        logging: true
+      });
 
-    pdf.addImage(
-      canvas.toDataURL('image/png'),
-      'PNG',
-      0,
-      0,
-      imgWidth,
-      imgHeight
-    )
+      console.log('Canvas 생성 완료');
 
-    pdf.save(`${data?.title || 'document'}.pdf`)
+      const imgWidth = 595.28;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(
+        canvas.toDataURL('image/png'),
+        'PNG',
+        0,
+        0,
+        imgWidth,
+        imgHeight
+      );
+
+      pdf.save(`${data?.title || 'document'}.pdf`);
+      console.log('PDF 저장 완료');
+    } catch (error) {
+      console.error('PDF 변환 중 에러:', error);
+    }
   }
 
   if (!data) return null
