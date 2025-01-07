@@ -15,6 +15,22 @@ const PostDetail: React.FC<Props> = () => {
   const data = usePostQuery()
   const contentRef = useRef<HTMLDivElement>(null)
 
+  const preloadImages = async () => {
+    const images = contentRef.current?.getElementsByTagName("img")
+    if (images) {
+      const promises = Array.from(images).map((img) => {
+        if (img.crossOrigin !== "anonymous") {
+          img.crossOrigin = "anonymous" // CORS 적용
+        }
+        return new Promise((resolve, reject) => {
+          img.onload = resolve
+          img.onerror = reject
+        })
+      })
+      await Promise.all(promises)
+    }
+  }
+
   const handleDownloadPDF = async () => {
     if (!contentRef.current) return
 
@@ -23,9 +39,9 @@ const PostDetail: React.FC<Props> = () => {
 
       // html2canvas 옵션 조정
       const canvas = await html2canvas(content, {
-        scale: 1.5, // 해상도 조정
+        scale: window.devicePixelRatio || 2, // 디바이스 해상도 반영
         useCORS: true, // 이미지 로딩을 위해
-        logging: false,
+        logging: true, // 디버깅용 로그 출력
         width: content.scrollWidth, // 전체 너비 캡처
         height: content.scrollHeight, // 전체 높이 캡처
         windowWidth: content.scrollWidth, // 뷰포트 너비 설정
@@ -38,7 +54,8 @@ const PostDetail: React.FC<Props> = () => {
 
       // PDF 크기와 여백 설정
       const margin = 40 // 여백 크기 (포인트 단위)
-      const imgWidth = 595 - margin * 2 // A4 너비에서 여백을 뺀 크기
+      const imgData = canvas.toDataURL("image/png")
+      const imgWidth = 595.28 // A4 크기
       const imgHeight = (canvas.height * imgWidth) / canvas.width
 
       // PDF 생성 옵션 설정
@@ -48,38 +65,19 @@ const PostDetail: React.FC<Props> = () => {
         format: "a4",
       })
 
-      // 여백을 포함하여 이미지 추가
-      pdf.addImage(
-        canvas.toDataURL("image/png"),
-        "PNG",
-        margin, // x 좌표에 여백 추가
-        margin, // y 좌표에 여백 추가
-        imgWidth,
-        imgHeight
-      )
+      let heightLeft = imgHeight
+      let position = 0
 
-      // 페이지 높이를 넘어가는 경우 자동으로 페이지 추가
-      if (imgHeight > 842 - margin * 2) {
-        // A4 높이(842pt)에서 여백을 뺀 높이
-        let remainingHeight = imgHeight
-        let currentPage = 1
+      // 첫 페이지 추가
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
+      heightLeft -= 842 // A4 높이
 
-        while (remainingHeight > 0) {
-          remainingHeight -= 842 - margin * 2
-          if (remainingHeight > 0) {
-            pdf.addPage()
-            currentPage++
-
-            pdf.addImage(
-              canvas.toDataURL("image/png"),
-              "PNG",
-              margin,
-              margin - (842 - margin * 2) * (currentPage - 1),
-              imgWidth,
-              imgHeight
-            )
-          }
-        }
+      // 여러 페이지 처리
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight
+        pdf.addPage()
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
+        heightLeft -= 842
       }
 
       pdf.save(`${data?.title || "document"}.pdf`)
@@ -134,7 +132,9 @@ const PostDetail: React.FC<Props> = () => {
         )}
 
         <div
-          ref={contentRef} style={{ padding: "40px", maxWidth: "800px", margin: "0 auto" }}>
+          ref={contentRef}
+          style={{ padding: "40px", maxWidth: "800px", margin: "0 auto" }}
+        >
           <NotionRenderer recordMap={data.recordMap} />
         </div>
         {data.type[0] === "Post" && (
