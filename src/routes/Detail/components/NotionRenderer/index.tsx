@@ -121,6 +121,8 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
 
   /* 기본 인라인 코드 스타일 */
   .notion-inline-code {
+    color: ${({ theme }) =>
+      theme === "dark" ? "#ccc" : "rgb(17 24 39)"}; /* 기본 색상 추가 */
     background-color: ${({ theme }) =>
       theme === "dark" ? "rgba(45,45,45)" : "rgba(247,246,243)"};
     padding: 0.2em 0.4em;
@@ -130,11 +132,11 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
 
   /* 텍스트 색상 */
   .notion-gray .notion-inline-code {
-    color: rgb(120, 119, 116);
+    color: rgb(120, 119, 116) !important;
   }
 
   .notion-brown .notion-inline-code {
-    color: rgb(159, 107, 83);
+    color: rgb(159, 107, 83) !important;
   }
 
   .notion-orange .notion-inline-code {
