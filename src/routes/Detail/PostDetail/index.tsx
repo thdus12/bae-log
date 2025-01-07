@@ -74,11 +74,25 @@ const PostDetail: React.FC<Props> = () => {
         {isPaper && (
           <button
             onClick={handleDownloadPDF}
-            className="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
             style={{
+              padding: '8px 16px',
+              backgroundColor: '#f3f4f6',
               border: '1px solid #e5e7eb',
+              borderRadius: '6px',
               fontSize: '0.875rem',
-              marginTop: '1rem'
+              marginTop: '1rem',
+              marginBottom: '1rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s',
+              color: '#374151',
+              fontWeight: 500,
+              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#e5e7eb'
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = '#f3f4f6'
             }}
           >
             Download PDF
