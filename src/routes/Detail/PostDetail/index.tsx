@@ -103,33 +103,33 @@ const PostDetail: React.FC<Props> = () => {
         )}
         {data.type[0] === "Post" && <PostHeader data={data} />}
         {/* PDF 다운로드 버튼 추가 */}
-        {isPaper && (
-          <div style={{ textAlign: "right", marginBottom: "1rem" }}>
-            <button
-              onClick={handleDownloadPDF}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: "#f3f4f6",
-                border: "1px solid #e5e7eb",
-                borderRadius: "6px",
-                fontSize: "0.875rem",
-                cursor: "pointer",
-                transition: "background-color 0.2s",
-                color: "#374151",
-                fontWeight: 500,
-                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = "#e5e7eb"
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = "#f3f4f6"
-              }}
-            >
-              Download PDF
-            </button>
-          </div>
-        )}
+        {/*{isPaper && (*/}
+        {/*  <div style={{ textAlign: "right", marginBottom: "1rem" }}>*/}
+        {/*    <button*/}
+        {/*      onClick={handleDownloadPDF}*/}
+        {/*      style={{*/}
+        {/*        padding: "8px 16px",*/}
+        {/*        backgroundColor: "#f3f4f6",*/}
+        {/*        border: "1px solid #e5e7eb",*/}
+        {/*        borderRadius: "6px",*/}
+        {/*        fontSize: "0.875rem",*/}
+        {/*        cursor: "pointer",*/}
+        {/*        transition: "background-color 0.2s",*/}
+        {/*        color: "#374151",*/}
+        {/*        fontWeight: 500,*/}
+        {/*        boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",*/}
+        {/*      }}*/}
+        {/*      onMouseOver={(e) => {*/}
+        {/*        e.currentTarget.style.backgroundColor = "#e5e7eb"*/}
+        {/*      }}*/}
+        {/*      onMouseOut={(e) => {*/}
+        {/*        e.currentTarget.style.backgroundColor = "#f3f4f6"*/}
+        {/*      }}*/}
+        {/*    >*/}
+        {/*      Download PDF*/}
+        {/*    </button>*/}
+        {/*  </div>*/}
+        {/*)}*/}
 
         <div
           ref={contentRef}
