@@ -85,6 +85,16 @@ const PostDetail: React.FC<Props> = () => {
           </button>
         )}
 
+        <div ref={contentRef}>
+          <NotionRenderer recordMap={data.recordMap} />
+        </div>
+        {data.type[0] === "Post" && (
+          <>
+            <Footer />
+            <CommentBox data={data} />
+          </>
+        )}
+
         <div>
           <NotionRenderer recordMap={data.recordMap} />
         </div>
