@@ -60,23 +60,27 @@ const ContentWrapper = styled.div`
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
   0 2px 4px -1px rgba(0, 0, 0, 0.06);
   margin: 0 auto;
+
   > article {
     margin: 0 auto;
-    max-width: 42rem;
+    max-width: 42rem;  // 게시글 너비
+    width: 100%;       // 추가
   }
 `
 
 const CommentWrapper = styled.div`
-  margin-top: 2rem;
+  margin: 2rem auto 0;  // top right/left bottom
   padding: 2rem 1.5rem;
   border-radius: 1.5rem;
+  max-width: 56rem;
   background-color: ${({ theme }) =>
-  theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
+    theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
   .comment-inner {
     max-width: 42rem;
+    width: 100%;
     margin: 0 auto;
   }
 `
