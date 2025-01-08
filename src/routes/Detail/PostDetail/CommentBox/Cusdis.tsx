@@ -44,7 +44,7 @@ const Cusdis: React.FC<Props> = ({ id, slug, title }) => {
       if (!iframe) return;
 
       // 초기 높이 설정
-      iframe.style.height = '400px';
+      iframe.style.height = '700px';
 
       // MutationObserver로 iframe 내부 변화 감지
       const observer = new MutationObserver(() => {
