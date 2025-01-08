@@ -85,6 +85,8 @@ const Cusdis: React.FC<Props> = ({ id, slug, title }) => {
   )
 }
 
+export default Cusdis
+
 // window 타입 확장
 declare global {
   interface Window {
