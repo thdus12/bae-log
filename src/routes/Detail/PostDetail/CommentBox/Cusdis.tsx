@@ -62,9 +62,16 @@ const StyledWrapper = styled.div`
 
   #cusdis_thread iframe {
     height: auto !important;
-    min-height: 450px !important;
+    min-height: 500px !important;  // 더 큰 값으로 수정
     width: 100% !important;
-    overflow: visible !important;  // overflow 추가
-    padding-bottom: 20px;  // 하단 여백 추가
+    overflow: visible !important;
+    border: none !important;
+  }
+
+  // 모바일에서는 더 큰 높이 설정
+  @media (max-width: 768px) {
+    #cusdis_thread iframe {
+      min-height: 600px !important;
+    }
   }
 `
