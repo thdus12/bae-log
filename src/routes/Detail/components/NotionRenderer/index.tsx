@@ -76,13 +76,6 @@ const NotionRenderer: FC<Props> = ({ recordMap }) => {
     if (rootElement) {
       rootElement.setAttribute("data-theme", scheme)
     }
-
-    // Cusdis의 테마도 동기화
-    const iframe = document.querySelector('#cusdis_thread iframe') as HTMLIFrameElement;
-    if (iframe) {
-      const theme = scheme === 'dark' ? 'dark' : 'light';
-      iframe.setAttribute('data-theme', theme);
-    }
   }, [scheme])
 
   return (
@@ -334,21 +327,6 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   // 다크모드일 때
   .dark-mode .notion-hr {
     border-top-color: rgba(255, 255, 255, 0.13);
-  }
-
-  /* Cusdis iframe 스타일 */
-  #cusdis_thread {
-    width: 100%;
-    color: ${({ theme }) => theme === "dark" ? "#fff" : "#000"};
-  }
-
-  #cusdis_thread iframe {
-    width: 100% !important;
-    border: none !important;
-    height: max-content !important;
-    min-height: 100% !important;
-    overflow: hidden !important;
-    background-color: ${({ theme }) => theme === "dark" ? "#1a1a1a" : "#fff"};
   }
 
   .notion-table-of-contents {
