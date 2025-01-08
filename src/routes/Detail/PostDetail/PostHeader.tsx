@@ -5,14 +5,18 @@ import { formatDate } from "src/libs/utils"
 import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
+import { useRouter } from "next/router"
 
 type Props = {
   data: TPost
 }
 
 const PostHeader: React.FC<Props> = ({ data }) => {
+  const router = useRouter()
+
   return (
     <StyledWrapper>
+      <a onClick={() => router.push("/")}>← Back</a>
       <h1 className="title">{data.title}</h1>
       {data.type[0] !== "Paper" && (
         <nav>
