@@ -38,34 +38,53 @@ const Cusdis: React.FC<Props> = ({ id, slug, title }) => {
 
   // 댓글 높이 동적 조절을 위한 useEffect 추가
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
+    // iframe 높이 조절 함수
+    const adjustIframeHeight = () => {
       const iframe = document.querySelector('#cusdis_thread iframe') as HTMLIFrameElement;
-      if (iframe && iframe.contentWindow) {
+      if (!iframe) return;
+
+      // 초기 높이 설정
+      iframe.style.height = '400px';
+
+      // MutationObserver로 iframe 내부 변화 감지
+      const observer = new MutationObserver(() => {
         try {
-          const height = iframe.contentWindow.document.body.scrollHeight;
-          iframe.style.height = `${height}px`;
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (iframeDoc) {
+            const height = iframeDoc.body.scrollHeight;
+            iframe.style.height = `${height + 50}px`; // 여유 공간 추가
+          }
         } catch (e) {
-          // cross-origin 이슈 처리
-        }
-      }
-    });
-
-    const thread = document.querySelector('#cusdis_thread');
-    if (thread) {
-      resizeObserver.observe(thread);
-    }
-
-    // Cusdis 로드 완료 이벤트 처리
-    if (window.CUSDIS) {
-      window.CUSDIS.on('onRendered', () => {
-        const iframe = document.querySelector('#cusdis_thread iframe');
-        if (iframe) {
-          resizeObserver.observe(iframe);
+          console.log('Error adjusting iframe height');
         }
       });
+
+      // iframe이 로드된 후 observer 설정
+      iframe.addEventListener('load', () => {
+        try {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (iframeDoc) {
+            observer.observe(iframeDoc.body, {
+              childList: true,
+              subtree: true
+            });
+          }
+        } catch (e) {
+          console.log('Error setting up observer');
+        }
+      });
+
+      return () => observer.disconnect();
+    };
+
+    // Cusdis가 렌더링된 후 높이 조절 시작
+    if (window.CUSDIS) {
+      window.CUSDIS.on('onRendered', adjustIframeHeight);
     }
 
-    return () => resizeObserver.disconnect();
+    // 일정 간격으로 높이 체크 (fallback)
+    const interval = setInterval(adjustIframeHeight, 1000);
+    return () => clearInterval(interval);
   }, [value]);
 
   return (
@@ -101,12 +120,12 @@ const StyledWrapper = styled.div`
 
   #cusdis_thread {
     width: 100%;
-    min-height: 150px;
   }
 
   #cusdis_thread iframe {
     width: 100% !important;
     border: none !important;
-    transition: height 0.2s ease;
+    min-height: 700px !important;
+    transition: height 0.3s ease;
   }
 `
