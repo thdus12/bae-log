@@ -19,47 +19,64 @@ const PostDetail: React.FC<Props> = () => {
   const category = (data.category && data.category?.[0]) || undefined
 
   return (
-    <StyledWrapper>
-      <a onClick={() => router.push("/")}>← Back</a>
-      <article>
-        {category && (
-          <div css={{ marginBottom: "0.5rem" }}>
-            <Category readOnly={data.status?.[0] === "PublicOnDetail"}>
-              {category}
-            </Category>
+    <>
+      <ContentWrapper>
+        <a onClick={() => router.push("/")}>← Back</a>
+        <article>
+          {category && (
+            <div css={{ marginBottom: "0.5rem" }}>
+              <Category readOnly={data.status?.[0] === "PublicOnDetail"}>
+                {category}
+              </Category>
+            </div>
+          )}
+          {data.type[0] === "Post" && <PostHeader data={data} />}
+          <div>
+            <NotionRenderer recordMap={data.recordMap} />
           </div>
-        )}
-        {data.type[0] === "Post" && <PostHeader data={data} />}
-        <div>
-          <NotionRenderer recordMap={data.recordMap} />
-        </div>
-        {data.type[0] === "Post" && (
-          <>
-            <Footer />
+          {data.type[0] === "Post" && <Footer />}
+        </article>
+      </ContentWrapper>
+
+      {data.type[0] === "Post" && (
+        <CommentWrapper>
+          <div className="comment-inner">
             <CommentBox data={data} />
-          </>
-        )}
-      </article>
-    </StyledWrapper>
+          </div>
+        </CommentWrapper>
+      )}
+    </>
   )
 }
 
 export default PostDetail
 
-const StyledWrapper = styled.div`
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+const ContentWrapper = styled.div`
+  padding: 3rem 1.5rem;
   border-radius: 1.5rem;
   max-width: 56rem;
   background-color: ${({ theme }) =>
     theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
   margin: 0 auto;
   > article {
     margin: 0 auto;
     max-width: 42rem;
+  }
+`
+
+const CommentWrapper = styled.div`
+  margin-top: 2rem;
+  padding: 2rem 1.5rem;
+  border-radius: 1.5rem;
+  background-color: ${({ theme }) =>
+  theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  .comment-inner {
+    max-width: 42rem;
+    margin: 0 auto;
   }
 `
