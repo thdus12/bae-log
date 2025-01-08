@@ -6,11 +6,13 @@ import Category from "src/components/Category"
 import styled from "@emotion/styled"
 import NotionRenderer from "../components/NotionRenderer"
 import usePostQuery from "src/hooks/usePostQuery"
+import { useRouter } from "next/router"
 
 type Props = {}
 
 const PostDetail: React.FC<Props> = () => {
   const data = usePostQuery()
+  const router = useRouter()
 
   if (!data) return null
 
@@ -18,6 +20,7 @@ const PostDetail: React.FC<Props> = () => {
 
   return (
     <StyledWrapper>
+      <a onClick={() => router.push("/")}>← Back</a>
       <article>
         {category && (
           <div css={{ marginBottom: "0.5rem" }}>
@@ -53,7 +56,7 @@ const StyledWrapper = styled.div`
   background-color: ${({ theme }) =>
     theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   margin: 0 auto;
   > article {
     margin: 0 auto;
