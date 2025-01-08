@@ -62,7 +62,7 @@ const StyledWrapper = styled.div`
 
   #cusdis_thread iframe {
     height: auto !important;
-    min-height: 450px !important;  // 더 큰 값으로 수정
+    min-height: 450px !important;
     width: 100% !important;
     overflow: visible !important;  // overflow 추가
     padding-bottom: 20px;  // 하단 여백 추가
