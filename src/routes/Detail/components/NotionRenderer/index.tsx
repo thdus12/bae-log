@@ -329,6 +329,13 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     border-top-color: rgba(255, 255, 255, 0.13);
   }
 
+  /* Cusdis iframe 스타일 */
+  #cusdis_thread iframe {
+    height: auto !important;
+    min-height: 312px;
+    width: 100% !important;
+  }
+
   .notion-table-of-contents {
     position: fixed;
     right: -75%;
