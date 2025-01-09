@@ -63,7 +63,7 @@ const ContentWrapper = styled.div`
 
   > article {
     margin: 0 auto;
-    max-width: 42rem;  // 게시글 너비
+    max-width: 60rem;  // 게시글 너비
     width: 100%;       // 추가
   }
 `
@@ -79,7 +79,7 @@ const CommentWrapper = styled.div`
   0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   .comment-inner {
-    max-width: 42rem;
+    max-width: 60rem;
     width: 100%;
     margin: 0 auto;
   }
