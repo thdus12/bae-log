@@ -3,11 +3,20 @@ import { CONFIG } from "site.config"
 import dynamic from "next/dynamic"
 
 const UtterancesComponent = dynamic(
-  () => import("./Utterances").then((mod) => mod.default),
+  () => import("./Utterances").then((mod) => {
+    return {
+      default: mod.default || mod,
+    };
+  }),
   { ssr: false }
 )
+
 const CusdisComponent = dynamic(
-  () => import("./Cusdis").then((mod) => mod.default),
+  () => import("./Cusdis").then((mod) => {
+    return {
+      default: mod.default || mod,
+    };
+  }),
   { ssr: false }
 )
 
