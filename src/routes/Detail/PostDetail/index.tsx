@@ -72,7 +72,7 @@ const CommentWrapper = styled.div`
   margin: 2rem auto 0;  // top right/left bottom
   padding: 2rem 1.5rem;
   border-radius: 1.5rem;
-  max-width: 56rem;
+  max-width: 70rem;
   background-color: ${({ theme }) =>
     theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
