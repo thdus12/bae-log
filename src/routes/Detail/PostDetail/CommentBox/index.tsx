@@ -29,7 +29,7 @@ type Props = {
 const CommentBox: React.FC<Props> = ({ data }) => {
   return (
     <StyledWrapper>
-      <Hr />
+      <Title>Comments</Title>
       {CONFIG.utterances.enable && <UtterancesComponent issueTerm={data.id} />}
       {CONFIG.cusdis.enable && (
         <CusdisComponent id={data.id} slug={data.slug} title={data.title} />
@@ -44,9 +44,9 @@ const StyledWrapper = styled.div`
   margin-top: 3rem;
 `
 
-const Hr = styled.hr`
-  margin: 2rem 0;
-  border: none;
-  height: 1px;
-  background-color: ${({ theme }) => theme.colors.gray6};
+const Title = styled.h3`
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.gray12};
 `
