@@ -132,13 +132,6 @@ const StyledWrapper = styled.div`
     border: none !important;
     min-height: 700px !important;
     transition: height 0.3s ease;
-    padding: 1rem 0;  // 여백 추가
-  }
-  
-  // 댓글 사이 구분선 추가
-  .cusdis-comment:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.gray6};
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
+    margin: 1rem 0;  // 여백 추가
   }
 `
