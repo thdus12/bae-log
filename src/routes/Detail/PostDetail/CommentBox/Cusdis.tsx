@@ -13,12 +13,20 @@ type Props = {
 const Cusdis: React.FC<Props> = ({ id, slug, title }) => {
   const [value, setValue] = useState(0)
   const [scheme] = useScheme()
+  const [mounted, setMounted] = useState(false)
+
+  // 컴포넌트가 마운트된 후에만 window 객체에 접근
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const onDocumentElementChange = useCallback(() => {
     setValue((value) => value + 1)
   }, [])
 
   useEffect(() => {
+    if (!mounted) return;  // 마운트 되기 전에는 실행하지 않음
+
     const changesObserver = new MutationObserver(
       (mutations: MutationRecord[]) => {
         mutations.forEach((mutation: MutationRecord) => {
@@ -34,32 +42,29 @@ const Cusdis: React.FC<Props> = ({ id, slug, title }) => {
     return () => {
       changesObserver.disconnect()
     }
-  }, [onDocumentElementChange])
+  }, [onDocumentElementChange, mounted])
 
-  // 댓글 높이 동적 조절을 위한 useEffect 추가
   useEffect(() => {
-    // iframe 높이 조절 함수
+    if (!mounted) return;  // 마운트 되기 전에는 실행하지 않음
+
     const adjustIframeHeight = () => {
       const iframe = document.querySelector('#cusdis_thread iframe') as HTMLIFrameElement;
       if (!iframe) return;
 
-      // 초기 높이 설정
-      iframe.style.height = '700px';
+      iframe.style.height = '400px';
 
-      // MutationObserver로 iframe 내부 변화 감지
       const observer = new MutationObserver(() => {
         try {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
           if (iframeDoc) {
             const height = iframeDoc.body.scrollHeight;
-            iframe.style.height = `${height + 50}px`; // 여유 공간 추가
+            iframe.style.height = `${height + 50}px`;
           }
         } catch (e) {
           console.log('Error adjusting iframe height');
         }
       });
 
-      // iframe이 로드된 후 observer 설정
       iframe.addEventListener('load', () => {
         try {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -77,15 +82,15 @@ const Cusdis: React.FC<Props> = ({ id, slug, title }) => {
       return () => observer.disconnect();
     };
 
-    // Cusdis가 렌더링된 후 높이 조절 시작
-    if (window.CUSDIS) {
+    if (typeof window !== 'undefined' && window.CUSDIS) {
       window.CUSDIS.on('onRendered', adjustIframeHeight);
     }
 
-    // 일정 간격으로 높이 체크 (fallback)
     const interval = setInterval(adjustIframeHeight, 1000);
     return () => clearInterval(interval);
-  }, [value]);
+  }, [value, mounted]);
+
+  if (!mounted) return null;  // 마운트되기 전에는 아무것도 렌더링하지 않음
 
   return (
     <StyledWrapper id="comments">
