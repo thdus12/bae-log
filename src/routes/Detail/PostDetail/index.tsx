@@ -54,7 +54,7 @@ export default PostDetail
 const ContentWrapper = styled.div`
   padding: 3rem 1.5rem;
   border-radius: 1.5rem;
-  max-width: 56rem;
+  max-width: 70rem;  // 56rem에서 증가
   background-color: ${({ theme }) =>
     theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -63,23 +63,23 @@ const ContentWrapper = styled.div`
 
   > article {
     margin: 0 auto;
-    max-width: 60rem;  // 게시글 너비
-    width: 100%;       // 추가
+    max-width: 60rem;  // 42rem에서 증가
+    width: 100%;
   }
 `
 
 const CommentWrapper = styled.div`
-  margin: 2rem auto 0;  // top right/left bottom
+  margin: 2rem auto 0;
   padding: 2rem 1.5rem;
   border-radius: 1.5rem;
-  max-width: 70rem;
+  max-width: 70rem;  // 56rem에서 증가
   background-color: ${({ theme }) =>
     theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
   0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   .comment-inner {
-    max-width: 60rem;
+    max-width: 60rem;  // 42rem에서 증가
     width: 100%;
     margin: 0 auto;
   }
