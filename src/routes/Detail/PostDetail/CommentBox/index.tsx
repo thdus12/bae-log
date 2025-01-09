@@ -1,6 +1,8 @@
 import { TPost } from "src/types"
 import { CONFIG } from "site.config"
 import dynamic from "next/dynamic"
+import styled from "@emotion/styled"
+
 
 const UtterancesComponent = dynamic(
   () => import("./Utterances").then((mod) => {
@@ -26,13 +28,25 @@ type Props = {
 
 const CommentBox: React.FC<Props> = ({ data }) => {
   return (
-    <div>
+    <StyledWrapper>
+      <Hr />
       {CONFIG.utterances.enable && <UtterancesComponent issueTerm={data.id} />}
       {CONFIG.cusdis.enable && (
         <CusdisComponent id={data.id} slug={data.slug} title={data.title} />
       )}
-    </div>
+    </StyledWrapper>
   )
 }
 
 export default CommentBox
+
+const StyledWrapper = styled.div`
+  margin-top: 3rem;
+`
+
+const Hr = styled.hr`
+  margin: 2rem 0;
+  border: none;
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.gray6};
+`

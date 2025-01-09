@@ -43,7 +43,6 @@ const PostDetail: React.FC<Props> = () => {
           <div className="comment-inner">
             <CommentBox data={data} />
           </div>
-          <hr/>
         </CommentWrapper>
       )}
     </>
