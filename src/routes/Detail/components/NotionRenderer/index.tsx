@@ -120,6 +120,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   /* 기본 인라인 코드 스타일 */
+
   .notion-inline-code {
     color: ${({ theme }) =>
       theme === "dark" ? "#ccc" : "rgb(17 24 39)"}; /* 기본 색상 추가 */
@@ -131,6 +132,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   /* 텍스트 색상 */
+
   .notion-gray .notion-inline-code {
     color: rgb(120, 119, 116) !important;
   }
@@ -168,6 +170,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   /* 배경 색상 */
+
   .notion-gray_background .notion-inline-code {
     background-color: rgb(241, 241, 239);
   }
@@ -215,7 +218,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     line-height: 1.75;
     padding: 0;
     margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
+    margin-bottom: 1rem;
   }
 
   .notion-toggle {
@@ -320,11 +323,12 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
 
   .notion-hr {
     border: none;
-    border-top: 1px solid rgba(55, 53, 47, 0.09);
-    margin: 2em 0;
+    border-top: 1px solid rgba(55, 53, 47, 0.4);
+    margin: 1em 0;
   }
 
   // 다크모드일 때
+
   .dark-mode .notion-hr {
     border-top-color: rgba(255, 255, 255, 0.13);
   }
