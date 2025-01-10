@@ -323,7 +323,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
 
   .notion-hr {
     border: none;
-    border-top: 1px solid rgba(55, 53, 47, 0.4);
+    border-top: 1px solid rgba(55, 53, 47, 0.3);
     margin: 1em 0;
   }
 
