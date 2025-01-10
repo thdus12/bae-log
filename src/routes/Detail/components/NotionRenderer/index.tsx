@@ -218,7 +218,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     line-height: 1.75;
     padding: 0;
     margin-top: 0.25rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   .notion-toggle {
@@ -323,7 +323,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
 
   .notion-hr {
     border: none;
-    border-top: 1px solid rgba(55, 53, 47, 0.2);
+    border-top: 1px solid rgba(55, 53, 47, 0.15);
     margin: 1em 0;
   }
 
