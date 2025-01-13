@@ -387,6 +387,12 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       margin: 20mm;  // 여백 설정
     }
 
+    html, body {
+      zoom: 64%;  // 64% 비율
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact
+    }
+
     /* 인쇄시 숨길 요소들 */
     button,
     .notion-header,
@@ -405,12 +411,6 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     /* 배경색 인쇄 설정 */
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-
-    /* 글씨 크기와 여백 조정 */
-    .notion-page {
-      padding: 0 !important;
-      font-size: 12pt;
-    }
 
     /* 링크 색상 */
     a {
