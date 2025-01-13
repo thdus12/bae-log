@@ -15,7 +15,8 @@ const PostDetail: React.FC<Props> = () => {
   const router = useRouter()
 
   const handlePrint = () => {
-    window.print()
+    // window.print()
+    window.open(`/print/${router.query.slug}`, '_blank');
   }
 
   if (!data) return null
