@@ -386,7 +386,14 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       size: A4;
       margin: 20mm;  // 여백 설정
     }
-
+    
+    /* 64% 비율 설정 */
+    html, body {
+      zoom: 64%;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
     /* 인쇄시 숨길 요소들 */
     button,
     .notion-header,
