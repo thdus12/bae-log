@@ -14,9 +14,14 @@ const PostDetail: React.FC<Props> = () => {
   const data = usePostQuery()
   const router = useRouter()
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   if (!data) return null
 
   const category = (data.category && data.category?.[0]) || undefined
+  const isPaper = data.type[0] === "Paper" // Paper 타입 체크
 
   return (
     <>
@@ -31,6 +36,34 @@ const PostDetail: React.FC<Props> = () => {
             </div>
           )}
           {data.type[0] === "Post" && <PostHeader data={data} />}
+          {/* Paper 타입일 때만 Print 버튼 표시 */}
+          {isPaper && (
+            <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+              <button
+                onClick={handlePrint}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#f3f4f6',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s',
+                  color: '#374151',
+                  fontWeight: 500,
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e5e7eb'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6'
+                }}
+              >
+                Print PDF
+              </button>
+            </div>
+          )}
           <div>
             <NotionRenderer recordMap={data.recordMap} />
           </div>
