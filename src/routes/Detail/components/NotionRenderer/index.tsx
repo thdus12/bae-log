@@ -388,7 +388,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     }
 
     html, body {
-      zoom: 64%;  // 64% 비율
+      zoom: 62%;  // 64% 비율
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact
     }
