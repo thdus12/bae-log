@@ -60,7 +60,7 @@ const PostDetail: React.FC<Props> = () => {
                   e.currentTarget.style.backgroundColor = '#f3f4f6'
                 }}
               >
-                Print PDF
+                Save PDF
               </button>
             </div>
           )}
