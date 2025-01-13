@@ -42,7 +42,7 @@ const PostDetail: React.FC<Props> = () => {
           {isPaper && (
             <PrintButtonWrapper>
               <button
-                onClick={() => window.open(`/print/${router.query.slug}`, '_blank')}
+                onClick={handlePrint}
                 style={{
                   padding: "8px 16px",
                   backgroundColor: "#f3f4f6",
