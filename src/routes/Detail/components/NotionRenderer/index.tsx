@@ -393,17 +393,28 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
-    
+
     /* 인쇄시 숨길 요소들 */
-    button,
-    nav, header, ul,
+    /* NavBar */
+    nav,
+    header,
+    ul[class*="nav"],
+    div[class*="nav"],
+      /* Back 버튼 */
+    a[onclick],
     .back-link,
+      /* 노션 요소들 */
     .notion-header,
     .notion-collection-view-type,
-    .notion-table-of-contents {
+    .notion-table-of-contents,
+      /* 버튼 */
+    button,
+    .print-button-wrapper {
       display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
     }
-
+    
     /* 페이지 나누기 방지 */
     .notion-text,
     .notion-quote,

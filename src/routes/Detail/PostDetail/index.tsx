@@ -101,6 +101,13 @@ const ContentWrapper = styled.div`
     max-width: 60rem; // 42rem에서 증가
     width: 100%;
   }
+
+  // 모바일에서 PDF 버튼 숨기기
+  @media (max-width: 768px) {
+    .print-button-wrapper {
+      display: none;
+    }
+  }
 `
 
 const CommentWrapper = styled.div`
