@@ -46,6 +46,12 @@ const PrintWrapper = styled.div`
       margin: 20mm;
     }
 
+    html, body {
+      zoom: 62%;  // 64% 비율
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact
+    }
+
     .print-content {
       padding: 0;
     }
