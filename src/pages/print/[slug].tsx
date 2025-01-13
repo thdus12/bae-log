@@ -105,14 +105,6 @@ const PrintWrapper = styled.div`
       print-color-adjust: exact
     }
 
-    /* 인쇄시 숨길 요소들 */
-    button,
-    .notion-header,
-    .notion-collection-view-type,
-    .notion-table-of-contents {
-      display: none !important;
-    }
-
     /* 페이지 나누기 방지 */
     .notion-text,
     .notion-quote,
