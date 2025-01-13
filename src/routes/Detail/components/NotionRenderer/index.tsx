@@ -386,35 +386,15 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       size: A4;
       margin: 20mm;  // 여백 설정
     }
-    
-    /* 64% 비율 설정 */
-    html, body {
-      zoom: 65%;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
 
     /* 인쇄시 숨길 요소들 */
-    /* NavBar */
-    nav,
-    header,
-    ul[class*="nav"],
-    div[class*="nav"],
-      /* Back 버튼 */
-    a[onclick],
-    .back-link,
-      /* 노션 요소들 */
+    button,
     .notion-header,
     .notion-collection-view-type,
-    .notion-table-of-contents,
-      /* 버튼 */
-    button,
-    .print-button-wrapper {
+    .notion-table-of-contents {
       display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
     }
-    
+
     /* 페이지 나누기 방지 */
     .notion-text,
     .notion-quote,

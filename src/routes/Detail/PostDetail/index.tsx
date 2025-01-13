@@ -40,7 +40,7 @@ const PostDetail: React.FC<Props> = () => {
           {data.type[0] === "Post" && <PostHeader data={data} />}
           {/* Paper 타입일 때만 Print 버튼 표시 */}
           {isPaper && (
-            <div style={{ textAlign: "right", marginBottom: "1rem" }}>
+            <PrintButtonWrapper>
               <button
                 onClick={handlePrint}
                 style={{
@@ -64,7 +64,7 @@ const PostDetail: React.FC<Props> = () => {
               >
                 Save PDF
               </button>
-            </div>
+            </PrintButtonWrapper>
           )}
           <div>
             <NotionRenderer recordMap={data.recordMap} />
@@ -101,13 +101,6 @@ const ContentWrapper = styled.div`
     max-width: 60rem; // 42rem에서 증가
     width: 100%;
   }
-
-  // 모바일에서 PDF 버튼 숨기기
-  @media (max-width: 768px) {
-    .print-button-wrapper {
-      display: none;
-    }
-  }
 `
 
 const CommentWrapper = styled.div`
@@ -126,3 +119,12 @@ const CommentWrapper = styled.div`
     margin: 0 auto;
   }
 `
+
+const PrintButtonWrapper = styled.div`
+  text-align: right;
+  margin-bottom: 1rem;
+  
+  @media (max-width: 768px) {  // 모바일 크기에서
+    display: none;  // 버튼 숨기기
+  }
+`;
