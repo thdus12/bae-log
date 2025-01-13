@@ -396,6 +396,8 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     
     /* 인쇄시 숨길 요소들 */
     button,
+    nav, header, ul,
+    .back-link,
     .notion-header,
     .notion-collection-view-type,
     .notion-table-of-contents {
