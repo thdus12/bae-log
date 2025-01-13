@@ -200,7 +200,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   .notion-pink_background .notion-inline-code {
-    background-color: rgb(249, 238, 243);
+    background-color: rgba(249, 238, 243, 0.8);
   }
 
   .notion-red_background .notion-inline-code {
