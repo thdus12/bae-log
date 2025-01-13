@@ -82,17 +82,14 @@ const PrintPage = () => {
 export default PrintPage
 
 const PrintWrapper = styled.div`
-  padding: 3rem 1.5rem;
-  border-radius: 1.5rem;
-  max-width: 70rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-  0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  margin: 0 auto;
+  background: white;
 
   .print-content {
     margin: 0 auto;
-    max-width: 60rem;
-    width: 100%;
+    /* 기본 상태에서도 scale 적용 */
+    transform: scale(0.62);
+    transform-origin: top center;
+    width: 161.29%; /* 100% / 0.62 로 스케일에 맞춰 조정 */
   }
 
   @media print {
@@ -102,31 +99,16 @@ const PrintWrapper = styled.div`
     }
 
     padding: 0;
-    max-width: none;
-    box-shadow: none;
 
     .print-content {
-      max-width: none;
-      font-size: 62%;  // 글씨 크기를 62%로 줄임
-
-      /* Notion 컨텐츠의 모든 텍스트 요소 크기 조절 */
-      .notion-text,
-      .notion-h-title,
-      .notion-h1,
-      .notion-h2,
-      .notion-h3 {
-        font-size: 62%;
-      }
-
-      /* 인라인 코드도 크기 조절 */
-      .notion-inline-code {
-        font-size: 62%;
-      }
-
-      /* 이미지나 다른 요소들도 크기 조절이 필요하다면 추가 */
-      img {
-        transform: scale(0.62);
-      }
+      margin: 0;
+      /* 프린트할 때도 같은 scale 유지 */
+      transform: scale(0.62);
+      transform-origin: top center;
+      width: 161.29%;
     }
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 `
