@@ -15,7 +15,6 @@ const PostDetail: React.FC<Props> = () => {
   const router = useRouter()
 
   const handlePrint = () => {
-    alert('⚠️ 인쇄 설정에서 설정 더보기 > 배율 > 맞춤 설정을 95로 설정해주세요!');
     window.print();
   };
 
