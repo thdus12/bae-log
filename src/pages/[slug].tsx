@@ -18,12 +18,9 @@ const filter: FilterPostsOptions = {
 }
 
 export const getStaticPaths = async () => {
-  const posts = await getPosts()
-  const filteredPost = filterPosts(posts, filter)
-
   return {
-    paths: filteredPost.map((row) => `/${row.slug}`),
-    fallback: true,
+    paths: [],
+    fallback: "blocking",
   }
 }
 
