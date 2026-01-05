@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(git -C \"c:\\\\project\\\\bae-log\" status)",
+      "Bash(git -C \"c:\\\\project\\\\bae-log\" diff)",
+      "Bash(git -C \"c:\\\\project\\\\bae-log\" log --oneline -3)",
+      "Bash(git -C \"c:\\\\project\\\\bae-log\" add src/pages/[slug].tsx src/pages/print/[slug].tsx)",
+      "Bash(git -C \"c:\\\\project\\\\bae-log\" commit -m \"$\\(cat <<''EOF''\nfix: Vercel 빌드 시 Notion API 502 에러 해결\n\n- getStaticPaths에서 빌드 시 paths 생성 제거\n- fallback을 ''blocking''으로 변경하여 요청 시 페이지 생성\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"c:\\\\project\\\\bae-log\" push)"
+    ]
+  }
+}
