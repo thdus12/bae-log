@@ -1,44 +1,51 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { getPosts } from "src/apis"
-import { filterPosts } from "src/libs/utils/notion"
-import { FilterPostsOptions } from "src/libs/utils/notion/filterPosts"
-
-const filter: FilterPostsOptions = {
-  acceptStatus: ["Public", "PublicOnDetail"],
-  acceptType: ["Paper", "Post", "Page"],
-}
+import { CONFIG } from "site.config"
+import { NotionAPI } from "notion-client"
+import { idToUuid } from "notion-utils"
+import getAllPageIds from "src/libs/utils/notion/getAllPageIds"
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const posts = await getPosts()
-    const detailPosts = filterPosts(posts, filter)
+    let id = CONFIG.notionConfig.pageId as string
+    const api = new NotionAPI()
+    const response = await api.getPage(id)
+    id = idToUuid(id)
 
-    const allSlugs = posts.map((p: any) => ({
-      slug: p.slug,
-      title: p.title,
-      status: p.status,
-      type: p.type,
-      id: p.id,
-    }))
+    const block = response.block
+    const rawMetadata = block[id]?.value
+    const collectionQuery = response.collection_query
+    const firstCollection = Object.values(collectionQuery)[0]
 
-    const filteredSlugs = detailPosts.map((p: any) => ({
-      slug: p.slug,
-      title: p.title,
-      status: p.status,
-      type: p.type,
-    }))
+    // Show the structure of each view
+    const viewStructures: any = {}
+    if (firstCollection) {
+      Object.entries(firstCollection).forEach(([viewId, view]: [string, any]) => {
+        viewStructures[viewId] = {
+          hasBlockIds: !!view?.blockIds,
+          blockIdsCount: view?.blockIds?.length,
+          hasCollectionGroupResults: !!view?.collection_group_results,
+          collectionGroupBlockIdsCount: view?.collection_group_results?.blockIds?.length,
+          hasReducerResults: !!view?.reducerResults,
+          reducerResultsKeys: view?.reducerResults ? Object.keys(view.reducerResults) : null,
+          reducerCollectionGroupBlockIds: view?.reducerResults?.collection_group_results?.blockIds?.length,
+          topLevelKeys: Object.keys(view || {}),
+        }
+      })
+    }
 
-    const resumePost = posts.find((p: any) => p.slug === "resume")
+    const pageIds = getAllPageIds(response)
 
     res.status(200).json({
-      totalPosts: posts.length,
-      filteredPosts: detailPosts.length,
-      allSlugs,
-      filteredSlugs,
-      resumePost: resumePost || "NOT FOUND",
+      notionPageId: id,
+      rawMetadataType: rawMetadata?.type,
+      collectionQueryKeys: Object.keys(collectionQuery || {}),
+      viewCount: firstCollection ? Object.keys(firstCollection).length : 0,
+      viewStructures,
+      pageIdsCount: pageIds.length,
+      pageIdsSample: pageIds.slice(0, 5),
     })
   } catch (error: any) {
     res.status(500).json({
