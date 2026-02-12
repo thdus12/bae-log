@@ -57,7 +57,7 @@ async function getPageProperties(
                 const userId = rawUsers[i][0][1]
                 users.push({
                   id: userId,
-                  name: undefined,
+                  name: null,
                   profile_photo: null,
                 })
               }
