@@ -7,6 +7,23 @@ import getPageProperties from "src/libs/utils/notion/getPageProperties"
 import { TPosts } from "src/types"
 
 /**
+ * Notion API 응답의 새 형식(spaceId 래핑) 정규화
+ * Old: { value: {...data}, role } → New: { spaceId, value: { value: {...data}, role } }
+ */
+function normalizeRecordMap(recordMap: any): any {
+  const result: any = {}
+  for (const [key, entry] of Object.entries(recordMap)) {
+    const e = entry as any
+    if (e && "spaceId" in e && e.value?.value !== undefined) {
+      result[key] = { value: e.value.value, role: e.value.role }
+    } else {
+      result[key] = e
+    }
+  }
+  return result
+}
+
+/**
  * @param {{ includePages: boolean }} - false: posts only / true: include pages
  */
 
@@ -17,8 +34,12 @@ export const getPosts = async () => {
 
   const response = await api.getPage(id)
   id = idToUuid(id)
+
+  // Notion API 응답 정규화 (새 형식 대응)
+  response.block = normalizeRecordMap(response.block)
+  response.collection = normalizeRecordMap(response.collection) as any
+
   const collection = Object.values(response.collection)[0]?.value
-  const block = response.block
   const schema = collection?.schema
 
   // collection과 schema가 존재하는지로 유효성 확인
@@ -28,7 +49,8 @@ export const getPosts = async () => {
 
   // Construct Data
   const pageIds = getAllPageIds(response)
-  const wholeBlocks = await (await api.getBlocks(pageIds)).recordMap.block
+  const rawBlocks = await api.getBlocks(pageIds)
+  const wholeBlocks = normalizeRecordMap(rawBlocks.recordMap.block)
 
   const data = []
   for (let i = 0; i < pageIds.length; i++) {
