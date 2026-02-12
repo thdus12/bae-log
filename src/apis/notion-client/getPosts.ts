@@ -21,44 +21,39 @@ export const getPosts = async () => {
   const block = response.block
   const schema = collection?.schema
 
-  const rawMetadata = block[id].value
-
-  // Check Type
-  if (
-    rawMetadata?.type !== "collection_view_page" &&
-    rawMetadata?.type !== "collection_view"
-  ) {
+  // collection과 schema가 존재하는지로 유효성 확인
+  if (!collection || !schema) {
     return []
-  } else {
-    // Construct Data
-    const pageIds = getAllPageIds(response)
-    const wholeBlocks = await (await api.getBlocks(pageIds)).recordMap.block
-
-    const data = []
-    for (let i = 0; i < pageIds.length; i++) {
-      const id = pageIds[i]
-      const properties =
-        (await getPageProperties(id, wholeBlocks, schema)) || null
-      if (!wholeBlocks[id]) continue
-
-      // Add fullwidth, createdtime to properties
-      properties.createdTime = new Date(
-        wholeBlocks[id].value?.created_time
-      ).toString()
-      properties.fullWidth =
-        (wholeBlocks[id].value?.format as any)?.page_full_width ?? false
-
-      data.push(properties)
-    }
-
-    // Sort by date
-    data.sort((a: any, b: any) => {
-      const dateA: any = new Date(a?.date?.start_date || a.createdTime)
-      const dateB: any = new Date(b?.date?.start_date || b.createdTime)
-      return dateB - dateA
-    })
-
-    const posts = data as TPosts
-    return posts
   }
+
+  // Construct Data
+  const pageIds = getAllPageIds(response)
+  const wholeBlocks = await (await api.getBlocks(pageIds)).recordMap.block
+
+  const data = []
+  for (let i = 0; i < pageIds.length; i++) {
+    const id = pageIds[i]
+    const properties =
+      (await getPageProperties(id, wholeBlocks, schema)) || null
+    if (!wholeBlocks[id]) continue
+
+    // Add fullwidth, createdtime to properties
+    properties.createdTime = new Date(
+      wholeBlocks[id].value?.created_time
+    ).toString()
+    properties.fullWidth =
+      (wholeBlocks[id].value?.format as any)?.page_full_width ?? false
+
+    data.push(properties)
+  }
+
+  // Sort by date
+  data.sort((a: any, b: any) => {
+    const dateA: any = new Date(a?.date?.start_date || a.createdTime)
+    const dateB: any = new Date(b?.date?.start_date || b.createdTime)
+    return dateB - dateA
+  })
+
+  const posts = data as TPosts
+  return posts
 }
