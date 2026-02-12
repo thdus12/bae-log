@@ -2,41 +2,58 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { CONFIG } from "site.config"
 import { NotionAPI } from "notion-client"
 import { idToUuid } from "notion-utils"
+import getAllPageIds from "src/libs/utils/notion/getAllPageIds"
+import getPageProperties from "src/libs/utils/notion/getPageProperties"
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const rawId = CONFIG.notionConfig.pageId as string
+    let id = CONFIG.notionConfig.pageId as string
     const api = new NotionAPI()
-    const response = await api.getPage(rawId)
-    const convertedId = idToUuid(rawId)
+    const response = await api.getPage(id)
+    id = idToUuid(id)
 
-    const block = response.block
-    const blockKeys = Object.keys(block)
-    const blockHasConvertedId = convertedId in block
-    const blockEntry = block[convertedId]
+    const collection = Object.values(response.collection)[0]?.value
+    const schema = collection?.schema
 
-    // Try to find the block by checking all keys
-    let matchingBlockType = null
-    for (const key of blockKeys) {
-      const type = block[key]?.value?.type
-      if (type === "collection_view_page" || type === "collection_view") {
-        matchingBlockType = { key, type }
-        break
+    if (!collection || !schema) {
+      return res.status(200).json({ error: "No collection or schema" })
+    }
+
+    const pageIds = getAllPageIds(response)
+
+    // Step 2: getBlocks
+    const blocksResponse = await api.getBlocks(pageIds)
+    const wholeBlocks = blocksResponse.recordMap.block
+
+    const wholeBlocksKeys = Object.keys(wholeBlocks)
+    const matchCount = pageIds.filter((pid) => pid in wholeBlocks).length
+
+    // Step 3: Try extracting one page
+    let sampleResult = null
+    if (pageIds.length > 0) {
+      const sampleId = pageIds[0]
+      const hasBlock = sampleId in wholeBlocks
+      const blockValue = wholeBlocks[sampleId]?.value
+      const props = await getPageProperties(sampleId, wholeBlocks, schema)
+      sampleResult = {
+        sampleId,
+        hasBlock,
+        blockValueType: blockValue?.type ?? null,
+        blockValueHasProperties: !!blockValue?.properties,
+        extractedProps: props
+          ? { title: props.title, slug: props.slug, status: props.status, type: props.type }
+          : null,
       }
     }
 
     res.status(200).json({
-      rawId,
-      convertedId,
-      rawIdLength: rawId.length,
-      blockKeysCount: blockKeys.length,
-      blockKeysSample: blockKeys.slice(0, 5),
-      blockHasConvertedId,
-      blockEntryType: blockEntry?.value?.type ?? null,
-      matchingCollectionBlock: matchingBlockType,
+      pageIdsCount: pageIds.length,
+      wholeBlocksKeysCount: wholeBlocksKeys.length,
+      matchCount,
+      sampleResult,
     })
   } catch (error: any) {
     res.status(500).json({
