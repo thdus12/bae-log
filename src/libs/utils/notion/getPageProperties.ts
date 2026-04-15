@@ -4,7 +4,7 @@ import { customMapImageUrl } from "./customMapImageUrl"
 
 async function getPageProperties(
   id: string,
-  block: BlockMap,
+  block: any,
   schema: CollectionPropertySchemaMap
 ) {
   const rawProperties = Object.entries(block?.[id]?.value?.properties || [])

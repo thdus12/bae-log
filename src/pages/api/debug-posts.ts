@@ -49,7 +49,7 @@ export default async function handler(
     response.block = normalizeRecordMap(response.block)
     response.collection = normalizeRecordMap(response.collection) as any
 
-    const collection = Object.values(response.collection)[0]?.value
+    const collection = (Object.values(response.collection)[0] as any)?.value
     const schema = collection?.schema
 
     // Try getAllPageIds

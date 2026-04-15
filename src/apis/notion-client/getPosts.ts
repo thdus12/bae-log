@@ -39,7 +39,7 @@ export const getPosts = async () => {
   response.block = normalizeRecordMap(response.block)
   response.collection = normalizeRecordMap(response.collection) as any
 
-  const collection = Object.values(response.collection)[0]?.value
+  const collection = (Object.values(response.collection)[0] as any)?.value
   const schema = collection?.schema
 
   // collection과 schema가 존재하는지로 유효성 확인
