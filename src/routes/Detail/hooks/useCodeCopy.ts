@@ -1,8 +1,9 @@
 import { useEffect } from "react"
 
 /**
- * react-notion-x가 렌더한 코드블럭(.notion-code)에
- * 언어 라벨과 복사 버튼을 주입한다. (클라이언트 렌더 이후 실행)
+ * react-notion-x가 렌더한 코드블럭(.notion-code) 상단에
+ * 언어 라벨 + 복사 버튼이 들어간 바(bar)를 주입한다.
+ * 바가 자기 줄을 차지하므로 코드와 구조적으로 겹치지 않는다.
  */
 const useCodeCopy = () => {
   useEffect(() => {
@@ -14,18 +15,17 @@ const useCodeCopy = () => {
       blocks.forEach((block) => {
         if (block.dataset.copyReady === "true") return
         block.dataset.copyReady = "true"
-        block.style.position = "relative"
 
         const code = block.querySelector("code")
         const match = (code?.className || "").match(/language-([\w-]+)/)
-        const lang = match ? match[1] : ""
+        const lang = match ? match[1] : "code"
 
-        if (lang) {
-          const label = document.createElement("span")
-          label.className = "code-lang-label"
-          label.textContent = lang
-          block.appendChild(label)
-        }
+        const bar = document.createElement("div")
+        bar.className = "code-bar"
+
+        const label = document.createElement("span")
+        label.className = "code-lang-label"
+        label.textContent = lang
 
         const btn = document.createElement("button")
         btn.type = "button"
@@ -44,7 +44,10 @@ const useCodeCopy = () => {
             btn.classList.remove("copied")
           }, 1400)
         })
-        block.appendChild(btn)
+
+        bar.appendChild(label)
+        bar.appendChild(btn)
+        block.insertBefore(bar, block.firstChild)
       })
       return blocks.length > 0
     }

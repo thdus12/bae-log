@@ -13,6 +13,7 @@ import "katex/dist/katex.min.css"
 import { FC, useEffect } from "react"
 import styled from "@emotion/styled"
 import { pretendard } from "src/assets"
+import { plumOf } from "src/styles/plum"
 
 const _NotionRenderer = dynamic(
   () => import("react-notion-x").then((m) => m.NotionRenderer),
@@ -119,34 +120,43 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       theme === "dark" ? "#2d2d2d" : "#f7f6f3"};
   }
 
-  /* 코드블럭 언어 라벨 + 복사 버튼 (useCodeCopy가 주입) */
+  /* 코드블럭 상단 바: 언어 라벨 + 복사 버튼 (useCodeCopy가 주입) */
   .notion-code {
-    /* 라벨이 코드 첫 줄과 겹치지 않도록 상단 여백 확보 */
-    padding-top: 2.75rem;
+    position: relative;
+    /* 바(2.5rem)가 자기 공간을 갖도록 상단 패딩 확보 */
+    padding-top: 3.4rem !important;
 
-    .code-lang-label {
+    .code-bar {
       position: absolute;
-      top: 0.55rem;
-      left: 0.8rem;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.75rem 0 1.1rem;
+      border-bottom: 1px solid
+        ${({ theme }) =>
+          theme === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)"};
+      white-space: normal;
+    }
+    .code-lang-label {
       font-size: 0.7rem;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       color: ${({ theme }) => (theme === "dark" ? "#8f8f94" : "#9b9a97")};
       pointer-events: none;
     }
     .code-copy-btn {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.6rem;
       font-size: 0.72rem;
       font-weight: 500;
-      padding: 0.25rem 0.6rem;
+      padding: 0.2rem 0.6rem;
       border-radius: 0.4rem;
       cursor: pointer;
       color: ${({ theme }) => (theme === "dark" ? "#d4d4d8" : "#57565c")};
-      background-color: ${({ theme }) =>
-        theme === "dark" ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)"};
+      background-color: transparent;
       border: 1px solid
         ${({ theme }) =>
           theme === "dark"
@@ -160,7 +170,7 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     }
     .code-copy-btn:hover {
       background-color: ${({ theme }) =>
-        theme === "dark" ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)"};
+        theme === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.06)"};
     }
     .code-copy-btn.copied {
       opacity: 1;
@@ -173,13 +183,11 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   /* 기본 인라인 코드 스타일 */
 
   .notion-inline-code {
-    color: ${({ theme }) =>
-      theme === "dark" ? "#ccc" : "rgb(17 24 39)"}; /* 기본 색상 추가 */
-    background-color: ${({ theme }) =>
-      theme === "dark" ? "rgba(45,45,45)" : "rgba(247,246,243)"};
+    color: ${({ theme }) => plumOf(theme).accentDeep};
+    background-color: ${({ theme }) => plumOf(theme).tint};
     padding: 0.2em 0.4em;
-    border-radius: 3px;
-    font-size: 0.9em;
+    border-radius: 5px;
+    font-size: 0.88em;
   }
 
   /* 텍스트 색상 */
@@ -343,7 +351,33 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
   }
 
   .notion-quote {
-    padding: 0.2em 0.9em;
+    padding: 0.6em 1em;
+    border-left: 3px solid ${({ theme }) => plumOf(theme).accent};
+    background-color: ${({ theme }) => plumOf(theme).tint};
+    border-radius: 0 10px 10px 0;
+    font-size: 0.95em;
+  }
+
+  /* 소제목 왼쪽 플럼 그라데이션 마커 */
+  .notion-h1,
+  .notion-h2 {
+    position: relative;
+    padding-left: 0.9rem;
+  }
+  .notion-h1::before,
+  .notion-h2::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.2em;
+    width: 4px;
+    height: 1.05em;
+    border-radius: 4px;
+    background: linear-gradient(
+      180deg,
+      ${({ theme }) => plumOf(theme).violet},
+      ${({ theme }) => plumOf(theme).accent}
+    );
   }
 
   .notion-collection {

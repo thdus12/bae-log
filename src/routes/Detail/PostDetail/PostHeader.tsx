@@ -5,12 +5,16 @@ import { formatDate } from "src/libs/utils"
 import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
+import { plumOf } from "src/styles/plum"
+import useReadingTime from "../hooks/useReadingTime"
 
 type Props = {
   data: TPost
 }
 
 const PostHeader: React.FC<Props> = ({ data }) => {
+  const readingTime = useReadingTime()
+
   return (
     <StyledWrapper>
       <h1 className="title">{data.title}</h1>
@@ -29,7 +33,7 @@ const PostHeader: React.FC<Props> = ({ data }) => {
                   />
                   <div className="">{data.author[0].name}</div>
                 </div>
-                <div className="hr"></div>
+                <span className="dot" />
               </>
             )}
             <div className="date">
@@ -38,6 +42,12 @@ const PostHeader: React.FC<Props> = ({ data }) => {
                 CONFIG.lang
               )}
             </div>
+            {readingTime && (
+              <>
+                <span className="dot" />
+                <div className="reading-time">☕ {readingTime}분 읽기</div>
+              </>
+            )}
           </div>
           <div className="mid">
             {data.tags && (
@@ -69,41 +79,45 @@ export default PostHeader
 
 const StyledWrapper = styled.div`
   .title {
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-    font-weight: 700;
+    font-size: 2.125rem;
+    line-height: 1.3;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
   }
   nav {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     color: ${({ theme }) => theme.colors.gray11};
+    /* 헤더와 본문 사이 구분선 */
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
+    margin-bottom: 2rem;
+
     > .top {
       display: flex;
-      margin-bottom: 0.75rem;
-      gap: 0.75rem;
+      margin-bottom: 0.875rem;
+      gap: 0.625rem;
       align-items: center;
+      font-size: 0.875rem;
+      font-variant-numeric: tabular-nums;
       .author {
         display: flex;
         gap: 0.5rem;
         align-items: center;
       }
-      .hr {
-        margin-top: 0.25rem;
-        margin-bottom: 0.25rem;
-        align-self: stretch;
-        width: 1px;
-        background-color: ${({ theme }) => theme.colors.gray10};
+      .dot {
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background-color: ${({ theme }) => theme.colors.gray8};
+        flex-shrink: 0;
       }
-      .date {
-        margin-right: 0.5rem;
-
-        @media (min-width: 768px) {
-          margin-left: 0;
-        }
+      .reading-time {
+        color: ${({ theme }) => theme.colors.gray10};
       }
     }
     > .mid {
       display: flex;
-      margin-bottom: 1rem;
       align-items: center;
       .tags {
         display: flex;
@@ -116,8 +130,8 @@ const StyledWrapper = styled.div`
     .thumbnail {
       overflow: hidden;
       position: relative;
-      margin-bottom: 1.75rem;
-      border-radius: 1.5rem;
+      margin-top: 1.5rem;
+      border-radius: 1.25rem;
       width: 100%;
       background-color: ${({ theme }) => theme.colors.gray4};
       padding-bottom: 66%;
