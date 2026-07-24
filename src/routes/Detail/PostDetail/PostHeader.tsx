@@ -83,7 +83,8 @@ const StyledWrapper = styled.div`
     line-height: 1.3;
     font-weight: 800;
     letter-spacing: -0.02em;
-    text-wrap: balance;
+    /* 한글 단어가 어절 단위로 자연스럽게 줄바꿈되도록 */
+    word-break: keep-all;
   }
   nav {
     margin-top: 1rem;
