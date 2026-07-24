@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getCookie, setCookie } from "cookies-next"
 import { useEffect } from "react"
 import { queryKey } from "src/constants/queryKey"
-import { PALETTE_IDS, PaletteId } from "src/styles/plum"
+import { DEFAULT_PALETTE, PALETTE_IDS, PaletteId } from "src/styles/plum"
 
 type SetPalette = (id: PaletteId) => void
 
@@ -12,10 +12,10 @@ const usePalette = (): [PaletteId, SetPalette] => {
   const { data } = useQuery<PaletteId>({
     queryKey: queryKey.palette(),
     enabled: false,
-    initialData: "plum",
+    initialData: DEFAULT_PALETTE,
   })
 
-  const palette = data || "plum"
+  const palette = data || DEFAULT_PALETTE
 
   const setPalette: SetPalette = (id: PaletteId) => {
     setCookie("palette", id)
@@ -26,7 +26,7 @@ const usePalette = (): [PaletteId, SetPalette] => {
     if (!window) return
 
     const saved = getCookie("palette") as PaletteId | undefined
-    setPalette(saved && PALETTE_IDS.includes(saved) ? saved : "plum")
+    setPalette(saved && PALETTE_IDS.includes(saved) ? saved : DEFAULT_PALETTE)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

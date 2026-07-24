@@ -26,6 +26,7 @@ const CONFIG = {
   link: "https://bae-log.vercel.app",
   since: 2023, // If leave this empty, current year will be used.
   lang: "ko-KR", // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES', 'ko-KR']
+  defaultPalette: "plum", // 사이트 기본 컬러 테마 ['plum', 'ocean', 'forest', 'sunset', 'mono'] — 방문자가 직접 고르면 그 선택이 우선
   ogImageGenerateURL: "https://og-image-korean.vercel.app", // The link to generate OG image, don't end with a slash
 
   // notion configuration (required)
