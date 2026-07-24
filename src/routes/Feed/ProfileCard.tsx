@@ -73,6 +73,14 @@ const ProfileCard: React.FC<Props> = () => {
           <div className=" name">{CONFIG.profile.name}</div>
           <div className="role">{CONFIG.profile.role}</div>
           <div className="text-sm mb-2">{CONFIG.profile.bio}</div>
+          <div className="copyright">
+            © {CONFIG.profile.name}{" "}
+            {(() => {
+              const y = new Date().getFullYear()
+              const from = +CONFIG.since
+              return from === y || !from ? y : `${from} - ${y}`
+            })()}
+          </div>
         </div>
       </div>
     </StyledWrapper>
@@ -143,6 +151,12 @@ const StyledWrapper = styled.div`
         margin-bottom: 0.5rem;
         font-size: 0.875rem;
         line-height: 1.25rem;
+      }
+      .copyright {
+        margin-top: 0.875rem;
+        font-size: 0.75rem;
+        color: ${({ theme }) => theme.colors.gray9};
+        font-variant-numeric: tabular-nums;
       }
     }
   }
