@@ -3,14 +3,15 @@ import { useRouter } from "next/router"
 import React from "react"
 import { FiFolder } from "react-icons/fi"
 import { SectionIcon } from "src/components/SectionIcon"
-import { useCategoriesQuery } from "src/hooks/useCategoriesQuery" // 이 hook을 새로 만들어야 합니다
+import { useCategoriesQuery } from "src/hooks/useCategoriesQuery"
+import { plumOf } from "src/styles/plum"
 
 type Props = {}
 
 const CategoryList: React.FC<Props> = () => {
   const router = useRouter()
   const currentCategory = router.query.category || undefined
-  const data = useCategoriesQuery() // 이 hook을 새로 만들어야 합니다
+  const data = useCategoriesQuery()
 
   const handleClickCategory = (value: any) => {
     // delete
@@ -45,7 +46,8 @@ const CategoryList: React.FC<Props> = () => {
             data-active={key === currentCategory}
             onClick={() => handleClickCategory(key)}
           >
-            {key}
+            <span className="name">{key}</span>
+            <span className="count">{data[key]}</span>
           </a>
         ))}
       </div>
@@ -81,13 +83,15 @@ const StyledWrapper = styled.div`
 
     @media (min-width: 1024px) {
       display: block;
+      margin-bottom: 0.5rem;
     }
 
     a {
-      display: block;
-      padding: 0.25rem;
-      padding-left: 1rem;
-      padding-right: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.625rem;
+      padding: 0.25rem 0.75rem;
       margin-top: 0.25rem;
       margin-bottom: 0.25rem;
       border-radius: 0.75rem;
@@ -96,17 +100,42 @@ const StyledWrapper = styled.div`
       color: ${({ theme }) => theme.colors.gray10};
       flex-shrink: 0;
       cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1),
+        background-color 0.15s ease, color 0.15s ease;
+
+      .count {
+        font-size: 0.6875rem;
+        font-variant-numeric: tabular-nums;
+        color: ${({ theme }) => theme.colors.gray9};
+        background-color: ${({ theme }) => plumOf(theme.scheme).tint};
+        border-radius: 9999px;
+        padding: 0.0625rem 0.4375rem;
+        transition: background-color 0.15s ease, color 0.15s ease;
+      }
 
       :hover {
-        background-color: ${({ theme }) => theme.colors.gray4};
+        transform: translateX(3px);
+        color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+        background-color: ${({ theme }) => plumOf(theme.scheme).tint};
+
+        .count {
+          background-color: ${({ theme }) => plumOf(theme.scheme).card};
+          color: ${({ theme }) => plumOf(theme.scheme).accent};
+        }
       }
       &[data-active="true"] {
-        color: ${({ theme }) => theme.colors.gray12};
-        background-color: ${({ theme }) => theme.colors.gray4};
+        color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+        background-color: ${({ theme }) => plumOf(theme.scheme).tint};
+        font-weight: 600;
 
-        :hover {
-          background-color: ${({ theme }) => theme.colors.gray4};
+        .count {
+          background-color: ${({ theme }) => plumOf(theme.scheme).tagOnBg};
+          color: ${({ theme }) => plumOf(theme.scheme).tagOnInk};
         }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
       }
     }
   }
