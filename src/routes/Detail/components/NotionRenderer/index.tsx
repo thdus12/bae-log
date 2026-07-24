@@ -121,6 +121,9 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
 
   /* 코드블럭 언어 라벨 + 복사 버튼 (useCodeCopy가 주입) */
   .notion-code {
+    /* 라벨이 코드 첫 줄과 겹치지 않도록 상단 여백 확보 */
+    padding-top: 2.75rem;
+
     .code-lang-label {
       position: absolute;
       top: 0.55rem;

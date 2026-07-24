@@ -4,6 +4,7 @@ import Footer from "./PostFooter"
 import CommentBox from "./CommentBox"
 import Category from "src/components/Category"
 import styled from "@emotion/styled"
+import { FiArrowLeft } from "react-icons/fi"
 import { plumOf } from "src/styles/plum"
 import NotionRenderer from "../components/NotionRenderer"
 import usePostQuery from "src/hooks/usePostQuery"
@@ -27,7 +28,9 @@ const PostDetail: React.FC<Props> = () => {
   return (
     <>
       <ContentWrapper>
-        <a onClick={() => router.push("/")}>← Back</a>
+        <BackButton onClick={() => router.push("/")}>
+          <FiArrowLeft /> Back
+        </BackButton>
         <article>
           {category && (
             <div css={{ marginBottom: "0.5rem" }}>
@@ -84,6 +87,38 @@ const PostDetail: React.FC<Props> = () => {
 }
 
 export default PostDetail
+
+const BackButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 1.5rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.colors.gray11};
+  background-color: ${({ theme }) => plumOf(theme.scheme).tint};
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  svg {
+    transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  :hover {
+    color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+
+    svg {
+      transform: translateX(-2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    svg {
+      transition: none;
+    }
+  }
+`
 
 const ContentWrapper = styled.div`
   padding: 3rem 1.5rem;
