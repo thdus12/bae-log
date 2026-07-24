@@ -144,8 +144,15 @@ const StyledWrapper = styled(Link)`
         transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
     }
-    /* 썸네일 없는 글: 제목 해시 기반 플럼 그라데이션 + 카테고리 이모지 워터마크 */
+    /* 썸네일 없는 글: 낮은 배너 형태의 플럼 그라데이션 + 카테고리 이모지 워터마크 */
     > .thumbnail.default-thumb {
+      /* 실제 썸네일보다 낮은 배너 비율 — 자동 생성임이 은근히 구분됨 */
+      padding-bottom: 26%;
+
+      @media (min-width: 1024px) {
+        padding-bottom: 26%;
+      }
+
       &[data-grad="0"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[0] : thumbGradients.light[0])}; }
       &[data-grad="1"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[1] : thumbGradients.light[1])}; }
       &[data-grad="2"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[2] : thumbGradients.light[2])}; }
