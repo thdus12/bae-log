@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import React from "react"
 import { Emoji } from "src/components/Emoji"
 import { useTagsQuery } from "src/hooks/useTagsQuery"
+import { plumOf } from "src/styles/plum"
 
 type Props = {}
 
@@ -95,16 +96,19 @@ const StyledWrapper = styled.div`
       color: ${({ theme }) => theme.colors.gray10};
       flex-shrink: 0;
       cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
 
       :hover {
-        background-color: ${({ theme }) => theme.colors.gray4};
+        color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+        background-color: ${({ theme }) => plumOf(theme.scheme).tint};
       }
       &[data-active="true"] {
-        color: ${({ theme }) => theme.colors.gray12};
-        background-color: ${({ theme }) => theme.colors.gray4};
+        color: ${({ theme }) => plumOf(theme.scheme).tagOnInk};
+        background-color: ${({ theme }) => plumOf(theme.scheme).tagOnBg};
 
         :hover {
-          background-color: ${({ theme }) => theme.colors.gray4};
+          color: ${({ theme }) => plumOf(theme.scheme).tagOnInk};
+          background-color: ${({ theme }) => plumOf(theme.scheme).tagOnBg};
         }
       }
     }

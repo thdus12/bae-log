@@ -3,10 +3,15 @@ import { Emoji } from "src/components/Emoji"
 import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
+import useScheme from "src/hooks/useScheme"
+import { plumOf } from "src/styles/plum"
 
 type Props = {}
 
 const ProfileCard: React.FC<Props> = () => {
+  const [scheme] = useScheme()
+  const palette = plumOf(scheme)
+
   return (
     <StyledWrapper>
       <div className="title">
@@ -14,6 +19,53 @@ const ProfileCard: React.FC<Props> = () => {
       </div>
       <div className="content">
         <div className="top">
+          {/* 사진 뒤에서 아주 느리게 숨쉬는 소프트포커스 오라 */}
+          <svg
+            className="aura"
+            viewBox="0 0 200 200"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <defs>
+              <filter id="profileAura">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.013"
+                  numOctaves="2"
+                  seed="8"
+                  result="t"
+                >
+                  <animate
+                    attributeName="baseFrequency"
+                    dur="18s"
+                    values="0.010;0.017;0.010"
+                    repeatCount="indefinite"
+                  />
+                </feTurbulence>
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="t"
+                  scale="28"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                />
+                <feGaussianBlur stdDeviation="9" />
+              </filter>
+              <radialGradient id="profileAuraGrad" cx="38%" cy="34%">
+                <stop offset="0%" stopColor={palette.violet} />
+                <stop offset="100%" stopColor={palette.accent} />
+              </radialGradient>
+            </defs>
+            <g filter="url(#profileAura)">
+              <circle
+                cx="100"
+                cy="100"
+                r="80"
+                fill="url(#profileAuraGrad)"
+                opacity={scheme === "dark" ? 0.3 : 0.38}
+              />
+            </g>
+          </svg>
           <Image src={CONFIG.profile.image} fill alt="" />
         </div>
         <div className="mid">
@@ -52,6 +104,21 @@ const StyledWrapper = styled.div`
         content: "";
         display: block;
         padding-bottom: 100%;
+      }
+      .aura {
+        position: absolute;
+        inset: -12%;
+        width: 124%;
+        height: 124%;
+        pointer-events: none;
+      }
+      img {
+        border-radius: 0.9rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .aura {
+          display: none;
+        }
       }
     }
     .mid {

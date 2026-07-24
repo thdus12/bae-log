@@ -1,7 +1,7 @@
 // pages/_app.tsx
 import { AppPropsWithLayout } from "../types"
 import { Hydrate, QueryClientProvider } from "@tanstack/react-query"
-import Sparkle from "src/components/Sparkle"
+import CursorFx from "src/components/CursorFx"
 import { RootLayout } from "src/layouts"
 import { queryClient } from "src/libs/react-query"
 import { useRouter } from 'next/router'
@@ -22,7 +22,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
           <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
         )}
       </Hydrate>
-      {!isPrintPage && <Sparkle />}
+      {!isPrintPage && <CursorFx />}
     </QueryClientProvider>
   )
 }

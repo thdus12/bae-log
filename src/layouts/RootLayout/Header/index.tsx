@@ -1,8 +1,10 @@
 import NavBar from "./NavBar"
 import Logo from "./Logo"
 import ThemeToggle from "./ThemeToggle"
+import CursorFxToggle from "./CursorFxToggle"
 import styled from "@emotion/styled"
 import { zIndexes } from "src/styles/zIndexes"
+import { plumOf } from "src/styles/plum"
 
 type Props = {
   fullWidth?: boolean
@@ -16,6 +18,7 @@ const Header: React.FC<Props> = ({ fullWidth, readingProgress }) => {
         <div data-full-width={fullWidth} className="container">
           <Logo />
           <div className="nav">
+            <CursorFxToggle />
             <ThemeToggle />
             <NavBar />
           </div>
@@ -66,7 +69,10 @@ const HeaderWrapper = styled.div`
 const ReadingProgress = styled.div<Props>`
   width: ${({ readingProgress }) => readingProgress + "%"};
   height: 0.2rem;
-  background-color: ${({ theme }) => theme.colors.sky11};
-  opacity: 0.6;
+  background: linear-gradient(
+    90deg,
+    ${({ theme }) => plumOf(theme.scheme).violet},
+    ${({ theme }) => plumOf(theme.scheme).accent}
+  );
   transition: width 0.4s ease-out;
 `
