@@ -131,7 +131,7 @@ const BackButton = styled.a`
 const ContentWrapper = styled.div`
   padding: 3rem 1.5rem;
   border-radius: 1.5rem;
-  max-width: 56rem; // 읽기 편한 폭
+  max-width: 52rem; // 읽기 편한 폭
   background-color: ${({ theme }) => plumOf(theme.scheme).card};
   border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -140,7 +140,7 @@ const ContentWrapper = styled.div`
 
   > article {
     margin: 0 auto;
-    max-width: 42rem; // 본문 약 65자 폭
+    max-width: 46rem; // 본문 폭 (여백 최소화)
     width: 100%;
   }
 `
@@ -149,14 +149,14 @@ const CommentWrapper = styled.div`
   margin: 2rem auto 0;
   padding: 2rem 1.5rem;
   border-radius: 1.5rem;
-  max-width: 56rem; // 읽기 편한 폭
+  max-width: 52rem; // 읽기 편한 폭
   background-color: ${({ theme }) => plumOf(theme.scheme).card};
   border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
   0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   .comment-inner {
-    max-width: 42rem; // 본문 약 65자 폭
+    max-width: 46rem; // 본문 폭 (여백 최소화)
     width: 100%;
     margin: 0 auto;
   }
