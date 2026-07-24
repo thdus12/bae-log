@@ -46,7 +46,9 @@ const StyledWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
-  margin-top: 2.5rem;
+  /* 본문 카드와 같은 폭으로 중앙 정렬 (카드 밖 독립 영역) */
+  max-width: 52rem;
+  margin: 1.25rem auto 0;
 
   @media (max-width: 620px) {
     grid-template-columns: 1fr;
@@ -54,6 +56,7 @@ const StyledWrapper = styled.div`
 
   .card {
     display: block;
+    background-color: ${({ theme }) => plumOf(theme.scheme).card};
     border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
     border-radius: 0.875rem;
     padding: 0.875rem 1rem;
