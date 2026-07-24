@@ -1,7 +1,8 @@
 import styled from "@emotion/styled"
 import { useRouter } from "next/router"
 import React from "react"
-import { Emoji } from "src/components/Emoji"
+import { FiFolder } from "react-icons/fi"
+import { SectionIcon } from "src/components/SectionIcon"
 import { useCategoriesQuery } from "src/hooks/useCategoriesQuery" // 이 hook을 새로 만들어야 합니다
 
 type Props = {}
@@ -35,7 +36,7 @@ const CategoryList: React.FC<Props> = () => {
   return (
     <StyledWrapper>
       <div className="top">
-        <Emoji>📂</Emoji> Categories
+        <SectionIcon><FiFolder /></SectionIcon> Categories
       </div>
       <div className="list">
         {Object.keys(data).map((key) => (

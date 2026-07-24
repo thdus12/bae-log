@@ -3,6 +3,8 @@ import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
 import { plumOf } from "src/styles/plum"
+import { FiUser } from "react-icons/fi"
+import { SectionIcon } from "src/components/SectionIcon"
 
 type Props = {
   className?: string
@@ -11,7 +13,7 @@ type Props = {
 const MobileProfileCard: React.FC<Props> = () => {
   return (
     <StyledWrapper>
-      <div className="top">💻 Profile</div>
+      <div className="top"><SectionIcon><FiUser /></SectionIcon> Profile</div>
       <div className="mid">
         <div className="wrapper">
           <Image
