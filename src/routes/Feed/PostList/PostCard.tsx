@@ -6,7 +6,7 @@ import { TPost } from "../../../types"
 import Image from "next/image"
 import Category from "../../../components/Category"
 import styled from "@emotion/styled"
-import { plumOf, thumbGradients } from "src/styles/plum"
+import { plumOf, thumbGradientCss } from "src/styles/plum"
 
 type Props = {
   data: TPost
@@ -156,10 +156,11 @@ const StyledWrapper = styled(Link)`
         padding-bottom: 26%;
       }
 
-      &[data-grad="0"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[0] : thumbGradients.light[0])}; }
-      &[data-grad="1"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[1] : thumbGradients.light[1])}; }
-      &[data-grad="2"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[2] : thumbGradients.light[2])}; }
-      &[data-grad="3"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[3] : thumbGradients.light[3])}; }
+      background-color: ${({ theme }) => plumOf(theme.scheme).tint};
+      &[data-grad="0"] { background-image: ${({ theme }) => thumbGradientCss(0, theme.scheme)}; }
+      &[data-grad="1"] { background-image: ${({ theme }) => thumbGradientCss(1, theme.scheme)}; }
+      &[data-grad="2"] { background-image: ${({ theme }) => thumbGradientCss(2, theme.scheme)}; }
+      &[data-grad="3"] { background-image: ${({ theme }) => thumbGradientCss(3, theme.scheme)}; }
 
       .thumb-emoji {
         position: absolute;

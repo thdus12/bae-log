@@ -2,6 +2,7 @@ import NavBar from "./NavBar"
 import Logo from "./Logo"
 import ThemeToggle from "./ThemeToggle"
 import CursorFxToggle from "./CursorFxToggle"
+import PaletteToggle from "./PaletteToggle"
 import styled from "@emotion/styled"
 import { zIndexes } from "src/styles/zIndexes"
 import { plumOf } from "src/styles/plum"
@@ -18,6 +19,7 @@ const Header: React.FC<Props> = ({ fullWidth, readingProgress }) => {
         <div data-full-width={fullWidth} className="container">
           <Logo />
           <div className="nav">
+            <PaletteToggle />
             <CursorFxToggle />
             <ThemeToggle />
             <NavBar />

@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ExtendedRecordMap } from "notion-types"
 import useScheme, { Scheme } from "src/hooks/useScheme"
+import usePalette from "src/hooks/usePalette"
 
 // core styles shared by all of react-notion-x (required)
 import "react-notion-x/src/styles.css"
@@ -71,13 +72,16 @@ type StyledWrapperProps = {
 
 const NotionRenderer: FC<Props> = ({ recordMap }) => {
   const [scheme] = useScheme()
+  // 팔레트 변경 구독 — 이 서브트리는 emotion 테마 대신 scheme 문자열을
+  // theme prop으로 쓰므로, 여기서 리렌더를 트리거해야 새 팔레트가 반영된다
+  const [palette] = usePalette()
 
   useEffect(() => {
     const rootElement = document.documentElement
     if (rootElement) {
       rootElement.setAttribute("data-theme", scheme)
     }
-  }, [scheme])
+  }, [scheme, palette])
 
   return (
     <StyledWrapper theme={scheme as any}>
