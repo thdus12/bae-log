@@ -362,27 +362,6 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
     font-size: 0.95em;
   }
 
-  /* 소제목 왼쪽 플럼 그라데이션 마커 */
-  .notion-h1,
-  .notion-h2 {
-    position: relative;
-    padding-left: 0.9rem;
-  }
-  .notion-h1::before,
-  .notion-h2::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0.2em;
-    width: 4px;
-    height: 1.05em;
-    border-radius: 4px;
-    background: linear-gradient(
-      180deg,
-      ${({ theme }) => plumOf(theme).violet},
-      ${({ theme }) => plumOf(theme).accent}
-    );
-  }
 
   .notion-collection {
     max-width: 100%;
