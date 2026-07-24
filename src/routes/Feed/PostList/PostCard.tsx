@@ -6,25 +6,43 @@ import { TPost } from "../../../types"
 import Image from "next/image"
 import Category from "../../../components/Category"
 import styled from "@emotion/styled"
-import { plumOf } from "src/styles/plum"
+import { plumOf, thumbGradients } from "src/styles/plum"
 
 type Props = {
   data: TPost
   showMedia: boolean
 }
 
+// 제목 해시 → 기본 썸네일 그라데이션 인덱스
+const hashSeed = (s: string) => {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 997
+  return h
+}
+
+// 카테고리 이름 맨 앞의 이모지 추출 (없으면 null)
+const categoryEmoji = (name?: string): string | null => {
+  if (!name) return null
+  const chars = Array.from(name.trim())
+  const first = chars[0]
+  if (!first) return null
+  const cp = first.codePointAt(0) || 0
+  const isEmoji = cp >= 0x1f000 || (cp >= 0x2600 && cp <= 0x27bf)
+  if (!isEmoji) return null
+  // 변형 선택자(️)가 붙은 이모지 대응 (예: ⚙️)
+  return chars[1] === "️" ? first + chars[1] : first
+}
+
 const PostCard: React.FC<Props> = ({ data, showMedia }) => {
   const category = (data.category && data.category?.[0]) || undefined
+  const emoji = categoryEmoji(category)
 
   return (
     <StyledWrapper href={`/${data.slug}`}>
       <article>
         {showMedia && category && (
           <div className="category">
-            {/* 썸네일 위에선 유리, 맨 카드 위에선 플럼 틴트 */}
-            <Category variant={data.thumbnail ? "glass" : "tint"}>
-              {category}
-            </Category>
+            <Category variant="glass">{category}</Category>
           </div>
         )}
         {showMedia && data.thumbnail && (
@@ -37,8 +55,16 @@ const PostCard: React.FC<Props> = ({ data, showMedia }) => {
             />
           </div>
         )}
+        {showMedia && !data.thumbnail && (
+          <div
+            className="thumbnail default-thumb"
+            data-grad={hashSeed(data.title) % 4}
+          >
+            {emoji && <span className="thumb-emoji">{emoji}</span>}
+          </div>
+        )}
         <div
-          data-thumb={!!data.thumbnail}
+          data-thumb={showMedia || !!data.thumbnail}
           data-category={!!category}
           className="content"
         >
@@ -117,6 +143,29 @@ const StyledWrapper = styled(Link)`
       img {
         transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
+    }
+    /* 썸네일 없는 글: 제목 해시 기반 플럼 그라데이션 + 카테고리 이모지 워터마크 */
+    > .thumbnail.default-thumb {
+      &[data-grad="0"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[0] : thumbGradients.light[0])}; }
+      &[data-grad="1"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[1] : thumbGradients.light[1])}; }
+      &[data-grad="2"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[2] : thumbGradients.light[2])}; }
+      &[data-grad="3"] { background: ${({ theme }) => (theme.scheme === "dark" ? thumbGradients.dark[3] : thumbGradients.light[3])}; }
+
+      .thumb-emoji {
+        position: absolute;
+        right: 16px;
+        bottom: -14px;
+        font-size: 4.5rem;
+        line-height: 1;
+        opacity: 0.28;
+        transform: rotate(-8deg);
+        user-select: none;
+        pointer-events: none;
+        transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+    }
+    :hover > .default-thumb .thumb-emoji {
+      transform: rotate(-8deg) scale(1.08);
     }
     > .content {
       padding: 1rem;
