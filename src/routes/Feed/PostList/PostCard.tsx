@@ -21,7 +21,10 @@ const PostCard: React.FC<Props> = ({ data, showMedia }) => {
       <article>
         {showMedia && category && (
           <div className="category">
-            <Category>{category}</Category>
+            {/* 썸네일 위에선 유리, 맨 카드 위에선 플럼 틴트 */}
+            <Category variant={data.thumbnail ? "glass" : "tint"}>
+              {category}
+            </Category>
           </div>
         )}
         {showMedia && data.thumbnail && (
