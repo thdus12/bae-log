@@ -1,3 +1,5 @@
+import { CONFIG } from "site.config"
+
 /**
  * 시그니처 컬러 팔레트 시스템
  * - 각 팔레트는 라이트/다크를 별도로 설계 (다크는 라이트 반전이 아님)
@@ -103,8 +105,15 @@ export const PALETTE_LABELS: Record<PaletteId, string> = {
 // 기존 코드 호환용 (기본 팔레트)
 export const plum = palettes.plum
 
+/** 사이트 기본 팔레트 — site.config.js의 defaultPalette로 주인장이 지정 */
+export const DEFAULT_PALETTE: PaletteId = PALETTE_IDS.includes(
+  (CONFIG as { defaultPalette?: PaletteId }).defaultPalette as PaletteId
+)
+  ? ((CONFIG as { defaultPalette?: PaletteId }).defaultPalette as PaletteId)
+  : "plum"
+
 /** 현재 선택된 팔레트 (ThemeProvider가 렌더 시 동기화) */
-let currentPaletteId: PaletteId = "plum"
+let currentPaletteId: PaletteId = DEFAULT_PALETTE
 
 export const setCurrentPaletteId = (id: PaletteId) => {
   currentPaletteId = id
