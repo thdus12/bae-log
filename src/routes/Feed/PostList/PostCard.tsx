@@ -42,7 +42,10 @@ const PostCard: React.FC<Props> = ({ data, showMedia }) => {
       <article>
         {showMedia && category && (
           <div className="category">
-            <Category variant="glass">{category}</Category>
+            {/* 사진 썸네일 위엔 어두운 유리, 그라데이션 기본 썸네일 위엔 밝은 서리 */}
+            <Category variant={data.thumbnail ? "glass" : "frost"}>
+              {category}
+            </Category>
           </div>
         )}
         {showMedia && data.thumbnail && (
