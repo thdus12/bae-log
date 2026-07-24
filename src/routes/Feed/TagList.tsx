@@ -1,7 +1,8 @@
 import styled from "@emotion/styled"
 import { useRouter } from "next/router"
 import React from "react"
-import { Emoji } from "src/components/Emoji"
+import { FiTag } from "react-icons/fi"
+import { SectionIcon } from "src/components/SectionIcon"
 import { useTagsQuery } from "src/hooks/useTagsQuery"
 import { plumOf } from "src/styles/plum"
 
@@ -36,7 +37,7 @@ const TagList: React.FC<Props> = () => {
   return (
     <StyledWrapper>
       <div className="top">
-        <Emoji>🏷️</Emoji> Tags
+        <SectionIcon><FiTag /></SectionIcon> Tags
       </div>
       <div className="list">
         {Object.keys(data).map((key) => (

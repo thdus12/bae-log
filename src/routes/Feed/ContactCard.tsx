@@ -1,5 +1,6 @@
 import { CONFIG } from "site.config"
-import { Emoji } from "src/components/Emoji"
+import { FiMessageCircle } from "react-icons/fi"
+import { SectionIcon } from "src/components/SectionIcon"
 import React from "react"
 import {
   AiOutlineInstagram,
@@ -14,7 +15,7 @@ const ContactCard: React.FC = () => {
   return (
     <>
       <StyledTitle>
-        <Emoji>💬</Emoji> Contact
+        <SectionIcon><FiMessageCircle /></SectionIcon> Contact
       </StyledTitle>
       <StyledWrapper>
         {CONFIG.profile.github && (

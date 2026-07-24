@@ -3,14 +3,15 @@ import React from "react"
 import { AiFillCodeSandboxCircle } from "react-icons/ai"
 import styled from "@emotion/styled"
 import { plumOf } from "src/styles/plum"
-import { Emoji } from "src/components/Emoji"
+import { FiBox } from "react-icons/fi"
+import { SectionIcon } from "src/components/SectionIcon"
 
 const ServiceCard: React.FC = () => {
   if (!CONFIG.projects) return null
   return (
     <>
       <StyledTitle>
-        <Emoji>🌟</Emoji> Service
+        <SectionIcon><FiBox /></SectionIcon> Service
       </StyledTitle>
       <StyledWrapper>
         {CONFIG.projects.map((project, idx) => (

@@ -1,5 +1,6 @@
 import { CONFIG } from "site.config"
-import { Emoji } from "src/components/Emoji"
+import { FiUser } from "react-icons/fi"
+import { SectionIcon } from "src/components/SectionIcon"
 import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
@@ -15,7 +16,7 @@ const ProfileCard: React.FC<Props> = () => {
   return (
     <StyledWrapper>
       <div className="title">
-        <Emoji>💻</Emoji> Profile
+        <SectionIcon><FiUser /></SectionIcon> Profile
       </div>
       <div className="content">
         <div className="top">

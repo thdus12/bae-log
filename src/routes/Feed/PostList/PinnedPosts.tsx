@@ -2,6 +2,8 @@ import PostCard from "src/routes/Feed/PostList/PostCard"
 import React, { useMemo } from "react"
 import usePostsQuery from "src/hooks/usePostsQuery"
 import styled from "@emotion/styled"
+import { RiPushpinLine } from "react-icons/ri"
+import { SectionIcon } from "src/components/SectionIcon"
 import { filterPosts } from "./filterPosts"
 import { DEFAULT_CATEGORY } from "src/constants"
 
@@ -27,7 +29,7 @@ const PinnedPosts: React.FC<Props> = ({ q }) => {
   return (
     <StyledWrapper>
       <div className="wrapper">
-        <div className="header">📌 Pinned Posts</div>
+        <div className="header"><SectionIcon><RiPushpinLine /></SectionIcon> Pinned Posts</div>
       </div>
       <div className="my-2">
         {filteredPosts.map((post) => (
