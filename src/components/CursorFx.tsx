@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react"
 import useCursorFx from "src/hooks/useCursorFx"
+import usePalette from "src/hooks/usePalette"
 import useScheme from "src/hooks/useScheme"
-import { plum } from "src/styles/plum"
+import { plumOf } from "src/styles/plum"
 
 /**
  * 커서 효과 (헤더 토글로 선택, 쿠키에 저장)
@@ -14,10 +15,6 @@ import { plum } from "src/styles/plum"
  * 터치 기기(pointer: coarse)와 모션 줄이기 설정에선 자동 비활성화.
  */
 
-const PALETTE = {
-  light: [plum.light.accent, plum.light.violet, plum.light.accentDeep],
-  dark: [plum.dark.accent, plum.dark.violet, plum.dark.accentDeep],
-}
 const INK_SIZES = [16, 13, 11, 9, 7, 6, 5]
 const DUST_LIFE = 60 // frames
 
@@ -26,6 +23,7 @@ const lerp = (a: number, b: number, k: number) => a + (b - a) * k
 const CursorFx: React.FC = () => {
   const [mode] = useCursorFx()
   const [scheme] = useScheme()
+  const [palette] = usePalette() // 팔레트 변경 시 커서 색도 다시 계산
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -36,7 +34,8 @@ const CursorFx: React.FC = () => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     if (!fine || reduce) return
 
-    const colors = PALETTE[scheme === "dark" ? "dark" : "light"]
+    const p = plumOf(scheme)
+    const colors = [p.accent, p.violet, p.accentDeep]
     let raf = 0
     let mx = -100
     let my = -100
@@ -147,7 +146,7 @@ const CursorFx: React.FC = () => {
       cancelAnimationFrame(raf)
       root.innerHTML = ""
     }
-  }, [mode, scheme])
+  }, [mode, scheme, palette])
 
   return (
     <>

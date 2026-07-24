@@ -5,12 +5,15 @@ import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
 import useScheme from "src/hooks/useScheme"
+import usePalette from "src/hooks/usePalette"
 import { plumOf } from "src/styles/plum"
 
 type Props = {}
 
 const ProfileCard: React.FC<Props> = () => {
   const [scheme] = useScheme()
+  // 오라 그라데이션 색은 렌더 본문에서 계산하므로 팔레트 변경 구독 필요
+  usePalette()
   const palette = plumOf(scheme)
 
   return (
