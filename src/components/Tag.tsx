@@ -1,30 +1,10 @@
-import { colors } from "../styles/colors"
 import styled from "@emotion/styled"
 import { useRouter } from "next/router"
 import React from "react"
-
-const colorArray = [
-  colors.light.red4,
-  colors.light.amber4,
-  colors.light.green4,
-  colors.light.blue4,
-  colors.light.indigo4,
-  colors.light.purple4,
-  colors.light.pink4,
-]
+import { plumOf } from "src/styles/plum"
 
 type Props = {
   children: string
-}
-
-const hashStringToColor = (str: string, colorsArray: string[]) => {
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  const index = Math.abs(hash) % colorsArray.length
-
-  return colorsArray[index]
 }
 
 const Tag: React.FC<Props> = ({ children }) => {
@@ -34,18 +14,24 @@ const Tag: React.FC<Props> = ({ children }) => {
     router.push(`/?tag=${value}`)
   }
 
-  const StyledTag = styled.div`
-    background-color: ${hashStringToColor(children, colorArray)};
-    color: ${colors.light.gray10};
-    padding: 0.25rem 0.5rem;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    font-weight: 400;
-    cursor: pointer;
-  `
-
   return <StyledTag onClick={() => handleClick(children)}>{children}</StyledTag>
 }
 
 export default Tag
+
+const StyledTag = styled.div`
+  background-color: ${({ theme }) => plumOf(theme.scheme).tint};
+  color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+  padding: 0.25rem 0.5rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  :hover {
+    background-color: ${({ theme }) => plumOf(theme.scheme).tagOnBg};
+    color: ${({ theme }) => plumOf(theme.scheme).tagOnInk};
+  }
+`
