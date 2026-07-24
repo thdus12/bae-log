@@ -76,10 +76,12 @@ const PostDetail: React.FC<Props> = () => {
           <div>
             <NotionRenderer recordMap={data.recordMap} />
           </div>
-          {data.type[0] === "Post" && <PrevNextPosts />}
           {data.type[0] === "Post" && <Footer />}
         </article>
       </ContentWrapper>
+
+      {/* 본문 카드와 댓글 카드 사이의 독립 영역 */}
+      {data.type[0] === "Post" && <PrevNextPosts />}
 
       {data.type[0] === "Post" && <Toc />}
 
