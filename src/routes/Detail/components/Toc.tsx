@@ -87,13 +87,13 @@ export default Toc
 const StyledWrapper = styled.nav`
   display: none;
 
-  @media (min-width: 1360px) {
+  @media (min-width: 1300px) {
     display: block;
   }
 
   position: fixed;
   top: 120px;
-  left: calc(50% + 29rem);
+  left: calc(50% + 27rem);
   width: 12rem;
   font-size: 0.8rem;
   line-height: 1.5;
