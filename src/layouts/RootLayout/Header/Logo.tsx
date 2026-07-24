@@ -44,8 +44,9 @@ const StyledWrapper = styled(Link)`
     stroke: ${({ theme }) => plumOf(theme.scheme).accent};
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
+    /* 101로 살짝 여유를 줘야 정지 상태에서 dash 경계 점이 새지 않음 */
+    stroke-dasharray: 101;
+    stroke-dashoffset: 101;
     transition: stroke-dashoffset 0.45s ease;
   }
   .doodle-line {
