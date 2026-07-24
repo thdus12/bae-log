@@ -7,6 +7,8 @@ import styled from "@emotion/styled"
 import { FiArrowLeft } from "react-icons/fi"
 import { plumOf } from "src/styles/plum"
 import NotionRenderer from "../components/NotionRenderer"
+import Toc from "../components/Toc"
+import PrevNextPosts from "./PrevNextPosts"
 import usePostQuery from "src/hooks/usePostQuery"
 import { useRouter } from "next/router"
 
@@ -33,8 +35,11 @@ const PostDetail: React.FC<Props> = () => {
         </BackButton>
         <article>
           {category && (
-            <div css={{ marginBottom: "0.5rem" }}>
-              <Category readOnly={data.status?.[0] === "PublicOnDetail"}>
+            <div css={{ marginBottom: "0.75rem" }}>
+              <Category
+                variant="tint"
+                readOnly={data.status?.[0] === "PublicOnDetail"}
+              >
                 {category}
               </Category>
             </div>
@@ -71,9 +76,12 @@ const PostDetail: React.FC<Props> = () => {
           <div>
             <NotionRenderer recordMap={data.recordMap} />
           </div>
+          {data.type[0] === "Post" && <PrevNextPosts />}
           {data.type[0] === "Post" && <Footer />}
         </article>
       </ContentWrapper>
+
+      {data.type[0] === "Post" && <Toc />}
 
       {data.type[0] === "Post" && (
         <CommentWrapper>
@@ -123,7 +131,7 @@ const BackButton = styled.a`
 const ContentWrapper = styled.div`
   padding: 3rem 1.5rem;
   border-radius: 1.5rem;
-  max-width: 70rem;  // 56rem에서 증가
+  max-width: 56rem; // 읽기 편한 폭
   background-color: ${({ theme }) => plumOf(theme.scheme).card};
   border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -132,7 +140,7 @@ const ContentWrapper = styled.div`
 
   > article {
     margin: 0 auto;
-    max-width: 60rem;  // 42rem에서 증가
+    max-width: 42rem; // 본문 약 65자 폭
     width: 100%;
   }
 `
@@ -141,14 +149,14 @@ const CommentWrapper = styled.div`
   margin: 2rem auto 0;
   padding: 2rem 1.5rem;
   border-radius: 1.5rem;
-  max-width: 70rem;  // 56rem에서 증가
+  max-width: 56rem; // 읽기 편한 폭
   background-color: ${({ theme }) => plumOf(theme.scheme).card};
   border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
   0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   .comment-inner {
-    max-width: 60rem;  // 42rem에서 증가
+    max-width: 42rem; // 본문 약 65자 폭
     width: 100%;
     margin: 0 auto;
   }
