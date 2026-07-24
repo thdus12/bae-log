@@ -26,6 +26,7 @@ const ContactCard: React.FC = () => {
           >
             <AiOutlineGithub className="icon" />
             <div className="name">github</div>
+            <span className="handle">{CONFIG.profile.github}</span>
           </a>
         )}
         {CONFIG.profile.email && (
@@ -37,6 +38,7 @@ const ContactCard: React.FC = () => {
           >
             <AiOutlineMail className="icon" />
             <div className="name">email</div>
+            <span className="handle">{CONFIG.profile.email}</span>
           </a>
         )}
         {CONFIG.profile.linkedin && (
@@ -47,6 +49,7 @@ const ContactCard: React.FC = () => {
           >
             <AiFillLinkedin className="icon" />
             <div className="name">linkedin</div>
+            <span className="handle">{CONFIG.profile.linkedin}</span>
           </a>
         )}
       </StyledWrapper>
@@ -77,6 +80,27 @@ const StyledWrapper = styled.div`
     color: ${({ theme }) => theme.colors.gray11};
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
+
+    /* hover 시 화살표 왼쪽에 실제 계정이 스르륵 (flex 흐름이라 라벨과 안 겹침) */
+    .handle {
+      margin-left: auto;
+      padding-right: 1.4rem; /* 화살표 자리 */
+      font-size: 0.75rem;
+      color: ${({ theme }) => plumOf(theme.scheme).accent};
+      opacity: 0;
+      transform: translateX(6px);
+      transition: opacity 0.2s ease,
+        transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    :hover .handle {
+      opacity: 1;
+      transform: translateX(0);
+    }
 
     /* hover 시 우측에 스르륵 나타나는 외부 링크 화살표 */
     ::after {
