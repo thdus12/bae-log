@@ -89,8 +89,8 @@ const StyledWrapper = styled.div`
     margin-bottom: 2.25rem;
     border-radius: 1rem;
     width: 100%;
-    background-color: ${({ theme }) =>
-      theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
+    background-color: ${({ theme }) => plumOf(theme.scheme).card};
+    border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
     @media (min-width: 768px) {
       padding: 1rem;
     }

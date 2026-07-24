@@ -10,6 +10,9 @@ export const plum = {
     tint: "#f5edf4", // 연한 라벤더 배경
     tagOnBg: "#a3538c",
     tagOnInk: "#ffffff",
+    paper: "#faf8fb", // 라일락 기 도는 오프화이트
+    card: "#ffffff",
+    line: "#ece6f0",
   },
   dark: {
     accent: "#d68fc1", // 오키드
@@ -18,6 +21,9 @@ export const plum = {
     tint: "#241f29",
     tagOnBg: "#4d2c41", // 와인 필
     tagOnInk: "#efc3de",
+    paper: "#121014", // 거의 무채색 차콜
+    card: "#19161d",
+    line: "#262129",
   },
 }
 

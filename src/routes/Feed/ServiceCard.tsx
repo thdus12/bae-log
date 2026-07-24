@@ -2,6 +2,7 @@ import { CONFIG } from "site.config"
 import React from "react"
 import { AiFillCodeSandboxCircle } from "react-icons/ai"
 import styled from "@emotion/styled"
+import { plumOf } from "src/styles/plum"
 import { Emoji } from "src/components/Emoji"
 
 const ServiceCard: React.FC = () => {
@@ -41,8 +42,8 @@ const StyledWrapper = styled.div`
   margin-bottom: 2.25rem;
   flex-direction: column;
   border-radius: 1rem;
-  background-color: ${({ theme }) =>
-    theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
+  background-color: ${({ theme }) => plumOf(theme.scheme).card};
+  border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
   > a {
     display: flex;
     padding: 0.75rem;

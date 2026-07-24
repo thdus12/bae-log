@@ -73,8 +73,8 @@ const StyledWrapper = styled(Link)`
     position: relative;
     margin-bottom: 1.5rem;
     border-radius: 1rem;
-    background-color: ${({ theme }) =>
-      theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
+    background-color: ${({ theme }) => plumOf(theme.scheme).card};
+    border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
     transition-property: box-shadow, transform;
     transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
     transition-duration: 300ms;
