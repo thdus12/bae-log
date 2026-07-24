@@ -119,6 +119,54 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       theme === "dark" ? "#2d2d2d" : "#f7f6f3"};
   }
 
+  /* 코드블럭 언어 라벨 + 복사 버튼 (useCodeCopy가 주입) */
+  .notion-code {
+    .code-lang-label {
+      position: absolute;
+      top: 0.55rem;
+      left: 0.8rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: ${({ theme }) => (theme === "dark" ? "#8f8f94" : "#9b9a97")};
+      pointer-events: none;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      color: ${({ theme }) => (theme === "dark" ? "#d4d4d8" : "#57565c")};
+      background-color: ${({ theme }) =>
+        theme === "dark" ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)"};
+      border: 1px solid
+        ${({ theme }) =>
+          theme === "dark"
+            ? "rgba(255, 255, 255, 0.12)"
+            : "rgba(0, 0, 0, 0.08)"};
+      opacity: 0;
+      transition: opacity 0.2s ease, background-color 0.2s ease;
+    }
+    &:hover .code-copy-btn {
+      opacity: 1;
+    }
+    .code-copy-btn:hover {
+      background-color: ${({ theme }) =>
+        theme === "dark" ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)"};
+    }
+    .code-copy-btn.copied {
+      opacity: 1;
+      color: #fff;
+      background-color: #30a46c;
+      border-color: transparent;
+    }
+  }
+
   /* 기본 인라인 코드 스타일 */
 
   .notion-inline-code {

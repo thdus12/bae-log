@@ -6,6 +6,7 @@ import { TPost } from "../../../types"
 import Image from "next/image"
 import Category from "../../../components/Category"
 import styled from "@emotion/styled"
+import { plumOf } from "src/styles/plum"
 
 type Props = {
   data: TPost
@@ -74,8 +75,8 @@ const StyledWrapper = styled(Link)`
     border-radius: 1rem;
     background-color: ${({ theme }) =>
       theme.scheme === "light" ? "white" : "rgb(63 63 70)"};
-    transition-property: box-shadow;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: box-shadow, transform;
+    transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
     transition-duration: 300ms;
 
     @media (min-width: 768px) {
@@ -83,8 +84,15 @@ const StyledWrapper = styled(Link)`
     }
 
     :hover {
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
+        0 16px 36px -18px rgba(0, 0, 0, 0.18);
+    }
+    :hover > .thumbnail img {
+      transform: scale(1.04);
+    }
+    :hover h2 {
+      color: ${({ theme }) => plumOf(theme.scheme).accent};
     }
     > .category {
       position: absolute;
@@ -96,11 +104,15 @@ const StyledWrapper = styled(Link)`
     > .thumbnail {
       position: relative;
       width: 100%;
+      overflow: hidden;
       background-color: ${({ theme }) => theme.colors.gray2};
       padding-bottom: 66%;
 
       @media (min-width: 1024px) {
         padding-bottom: 50%;
+      }
+      img {
+        transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
     }
     > .content {
@@ -126,6 +138,7 @@ const StyledWrapper = styled(Link)`
           font-size: 1.125rem;
           line-height: 1.75rem;
           font-weight: 500;
+          transition: color 0.2s ease;
 
           cursor: pointer;
 
