@@ -369,7 +369,9 @@ const Stats: React.FC<Props> = () => {
                         style={{
                           height: shelfIn ? h : 0,
                           backgroundColor: bookColor(gi + i),
-                          transitionDelay: `${gi * 120 + i * 55}ms`,
+                          // 등장(height)만 순차 지연, 호버(transform·filter)는 즉시 반응
+                          // — 값 순서는 .book의 transition 속성 순서와 같아야 한다
+                          transitionDelay: `${gi * 120 + i * 55}ms, 0s, 0s`,
                         }}
                       />
                     )
@@ -906,7 +908,7 @@ const StyledWrapper = styled.div`
     border-radius: 3px 3px 0 0;
     transform-origin: bottom center;
     transition: height 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
-      transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.28s ease;
+      transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.18s ease;
   }
   /* 마지막 책은 옆으로 삐딱하게 기대어 있음 */
   .book.lean {
