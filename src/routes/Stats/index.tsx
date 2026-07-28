@@ -699,8 +699,9 @@ const StyledWrapper = styled.div`
   .books {
     display: flex;
     align-items: flex-end;
+    align-content: flex-end;
     justify-content: center;
-    flex-wrap: wrap-reverse;
+    flex-wrap: wrap;
     gap: 3px;
     width: 100%;
     min-height: 54px;
