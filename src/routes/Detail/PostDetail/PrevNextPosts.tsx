@@ -5,7 +5,8 @@ import usePostQuery from "src/hooks/usePostQuery"
 import usePostsQuery from "src/hooks/usePostsQuery"
 import { plumOf } from "src/styles/plum"
 
-// 글 목록(최신순)에서 현재 글의 앞뒤 글을 찾아 내비 카드로 보여준다
+// 글 목록(최신순)에서 현재 글의 앞뒤 글을 찾아 내비 카드로 보여준다.
+// 앞/뒤 글이 없어도 영역은 유지하고 "없음"을 비활성 상태로 표시한다.
 const PrevNextPosts: React.FC = () => {
   const current = usePostQuery()
   const posts = usePostsQuery().filter((p) => p.type?.[0] === "Post")
@@ -16,7 +17,6 @@ const PrevNextPosts: React.FC = () => {
 
   const newer = idx > 0 ? posts[idx - 1] : null
   const older = idx < posts.length - 1 ? posts[idx + 1] : null
-  if (!newer && !older) return null
 
   return (
     <StyledWrapper>
@@ -26,7 +26,10 @@ const PrevNextPosts: React.FC = () => {
           <div className="pt">{older.title}</div>
         </Link>
       ) : (
-        <span />
+        <div className="card empty">
+          <div className="dir">← 이전 글</div>
+          <div className="pt none">없음</div>
+        </div>
       )}
       {newer ? (
         <Link className="card next" href={`/${newer.slug}`}>
@@ -34,7 +37,10 @@ const PrevNextPosts: React.FC = () => {
           <div className="pt">{newer.title}</div>
         </Link>
       ) : (
-        <span />
+        <div className="card next empty">
+          <div className="dir">다음 글 →</div>
+          <div className="pt none">없음</div>
+        </div>
       )}
     </StyledWrapper>
   )
@@ -48,7 +54,7 @@ const StyledWrapper = styled.div`
   gap: 0.75rem;
   /* 본문 카드와 같은 폭으로 중앙 정렬 (카드 밖 독립 영역) */
   max-width: 52rem;
-  margin: 1.25rem auto 0;
+  margin: 0.75rem auto;
 
   @media (max-width: 620px) {
     grid-template-columns: 1fr;
@@ -59,7 +65,7 @@ const StyledWrapper = styled.div`
     background-color: ${({ theme }) => plumOf(theme.scheme).card};
     border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
     border-radius: 0.875rem;
-    padding: 0.875rem 1rem;
+    padding: 0.75rem 1rem;
     cursor: pointer;
     transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1),
       border-color 0.15s ease;
@@ -90,6 +96,25 @@ const StyledWrapper = styled.div`
   }
   .card.next {
     text-align: right;
+  }
+
+  /* 앞/뒤 글이 없는 슬롯: 비활성 표시 */
+  .card.empty {
+    cursor: default;
+    opacity: 0.6;
+
+    .pt.none {
+      font-weight: 500;
+      color: ${({ theme }) => theme.colors.gray9};
+    }
+    :hover {
+      transform: none;
+      border-color: ${({ theme }) => plumOf(theme.scheme).line};
+
+      .pt.none {
+        color: ${({ theme }) => theme.colors.gray9};
+      }
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
