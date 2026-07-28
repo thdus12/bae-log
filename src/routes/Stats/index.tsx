@@ -1,11 +1,28 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import styled from "@emotion/styled"
+import { FiActivity, FiBarChart2, FiBookOpen } from "react-icons/fi"
 import usePostsQuery from "src/hooks/usePostsQuery"
 import usePalette from "src/hooks/usePalette"
 import useScheme from "src/hooks/useScheme"
+import { SectionIcon } from "src/components/SectionIcon"
 import { plumOf } from "src/styles/plum"
 
 type Props = {}
+
+// 고리를 두른 행성 (react-icons에 없어서 직접 그림)
+const PlanetIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    aria-hidden
+  >
+    <circle cx="12" cy="12" r="4.2" />
+    <ellipse cx="12" cy="12" rx="10.4" ry="4.4" transform="rotate(-22 12 12)" />
+  </svg>
+)
 
 const dateOf = (p: any) => new Date(p?.date?.start_date || p.createdTime)
 const dayKey = (d: Date) =>
@@ -172,8 +189,6 @@ const Stats: React.FC<Props> = () => {
     }
   }, [posts])
 
-  const maxTag = data.topTags[0]?.[1] || 1
-
   // 선택된 연도의 일별 그리드
   const [year, setYear] = useState<number>(() => new Date().getFullYear())
   useEffect(() => {
@@ -218,27 +233,34 @@ const Stats: React.FC<Props> = () => {
 
   const [grassRef, grassIn] = useInView<HTMLDivElement>()
   const [shelfRef, shelfIn] = useInView<HTMLDivElement>()
-  const [bubRef, bubIn] = useInView<HTMLDivElement>()
 
   return (
     <StyledWrapper>
       <header className="head">
-        <h1>📊 블로그 통계</h1>
+        <h1>
+          <SectionIcon>
+            <FiBarChart2 />
+          </SectionIcon>{" "}
+          Statistics
+        </h1>
         <p>지금까지 쌓아온 기록을 숫자로.</p>
       </header>
 
       <div className="tiles">
-        <Tile label="총 글" value={data.total} unit="개" active={tilesActive} delay={0} />
-        <Tile label="카테고리" value={data.categoryCount} unit="개" active={tilesActive} delay={90} />
-        <Tile label="태그" value={data.tagCount} unit="개" active={tilesActive} delay={180} />
-        <Tile label="활동 기간" value={data.months} unit="개월" active={tilesActive} delay={270} />
+        <Tile label="Posts" value={data.total} active={tilesActive} delay={0} />
+        <Tile label="Categories" value={data.categoryCount} active={tilesActive} delay={90} />
+        <Tile label="Tags" value={data.tagCount} active={tilesActive} delay={180} />
+        <Tile label="Months" value={data.months} active={tilesActive} delay={270} />
       </div>
 
-      {/* 🌱 잔디밭 */}
+      {/* 잔디밭 */}
       <section className="panel">
         <div className="phead">
           <h2>
-            🌱 기록의 잔디밭
+            <SectionIcon>
+              <FiActivity />
+            </SectionIcon>{" "}
+            Activity
             <small>
               {year}년 · {yearTotal}개
             </small>
@@ -323,9 +345,15 @@ const Stats: React.FC<Props> = () => {
         </div>
       </section>
 
-      {/* 📚 책장 */}
+      {/* 책장 */}
       <section className="panel">
-        <h2>📚 카테고리 책장 <small>글 하나가 책 한 권</small></h2>
+        <h2>
+          <SectionIcon>
+            <FiBookOpen />
+          </SectionIcon>{" "}
+          Bookshelf
+          <small>글 하나가 책 한 권</small>
+        </h2>
         <div className="shelfwrap" ref={shelfRef}>
           <div className="shelf">
             {data.categories.map(([name, n], gi) => (
@@ -359,54 +387,20 @@ const Stats: React.FC<Props> = () => {
         </div>
       </section>
 
-      {/* 🫧 태그 버블밭 */}
+      {/* 태그 은하수 */}
       <section className="panel">
-        <h2>🫧 태그 버블밭</h2>
-        <div className="bubbles" ref={bubRef}>
-          {data.topTags.map(([name, n], i) => {
-            const d = 54 + Math.round((n / maxTag) * 46)
-            const big = n / maxTag > 0.55
-            return (
-              <div
-                className="bub"
-                key={name}
-                title={`#${name} · ${n}개`}
-                style={{
-                  width: d,
-                  height: d,
-                  backgroundColor: big
-                    ? pal.accent
-                    : `color-mix(in srgb, ${pal.accent} ${18 + Math.round((n / maxTag) * 25)}%, ${pal.card})`,
-                  color: big ? pal.tagOnInk : pal.accentDeep,
-                  transform: bubIn ? "scale(1)" : "scale(0)",
-                  transitionDelay: `${i * 60}ms`,
-                  animationDelay: `${(i % 5) * -1.3}s`,
-                  animationDuration: `${3.6 + (i % 4) * 0.7}s`,
-                }}
-              >
-                <b>#{name}</b>
-                <span>{n}</span>
-              </div>
-            )
-          })}
-          {!data.topTags.length && <p className="empty">아직 없어요.</p>}
-        </div>
-
-        {/* gooey: 버블들이 가까워지면 액체처럼 뭉침 */}
-        <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden>
-          <defs>
-            <filter id="stats-goo">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b" />
-              <feColorMatrix
-                in="b"
-                mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -8"
-                result="g"
-              />
-              <feBlend in="SourceGraphic" in2="g" />
-            </filter>
-          </defs>
-        </svg>
+        <h2>
+          <SectionIcon>
+            <PlanetIcon />
+          </SectionIcon>{" "}
+          Tag Galaxy
+          <small>자주 쓴 태그일수록 안쪽 궤도</small>
+        </h2>
+        {data.topTags.length ? (
+          <TagGalaxy tags={data.topTags} total={data.tagCount} pal={pal} />
+        ) : (
+          <p className="empty">아직 없어요.</p>
+        )}
       </section>
     </StyledWrapper>
   )
@@ -415,7 +409,7 @@ const Stats: React.FC<Props> = () => {
 const Tile: React.FC<{
   label: string
   value: number
-  unit: string
+  unit?: string
   active: boolean
   delay: number
 }> = ({ label, value, unit, active, delay }) => {
@@ -425,8 +419,205 @@ const Tile: React.FC<{
       <div className="tlabel">{label}</div>
       <div className="tvalue">
         {n}
-        <span className="tunit">{unit}</span>
+        {unit && <span className="tunit">{unit}</span>}
       </div>
+    </div>
+  )
+}
+
+/* ──────────────── Tag Galaxy ──────────────── */
+
+const GALAXY_H = 380 // 데스크탑 높이 (모바일은 CSS에서 축소)
+const SQUASH = 0.5 // 궤도 타원의 세로 눌림 = 기울어진 궤도면
+
+// 배경 잔별 — SSR/CSR 결과가 같도록 난수 대신 결정적 값 사용
+// (Math.sin은 런타임마다 끝자리가 달라 하이드레이션 경고가 나므로 소수점 3자리로 고정)
+const frac = (x: number) => Number((x - Math.floor(x)).toFixed(3))
+const DUST = Array.from({ length: 42 }, (_, i) => ({
+  x: frac(Math.sin(i * 12.9898) * 43758.5453) * 100,
+  y: frac(Math.sin(i * 78.233) * 12345.678) * 100,
+  s: 1 + frac(Math.sin(i * 3.7) * 999.13) * 1.6,
+  d: frac(Math.sin(i * 5.11) * 731.7) * 4,
+}))
+
+const TagGalaxy: React.FC<{
+  tags: [string, number][]
+  total: number
+  pal: ReturnType<typeof plumOf>
+}> = ({ tags, total, pal }) => {
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const planetRefs = useRef<(HTMLDivElement | null)[]>([])
+  const angles = useRef<number[]>([])
+  const pausedRef = useRef(-1)
+  const [focused, setFocused] = useState(-1)
+  const [box, setBox] = useState({ w: 0, h: GALAXY_H })
+
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el) return
+    const read = () => setBox({ w: el.clientWidth, h: el.clientHeight })
+    read()
+    const ro = new ResizeObserver(read)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
+  // 자주 쓴 태그가 안쪽 궤도 · 큰 행성 · (아주 느리게) 빠른 공전
+  const orbits = useMemo(() => {
+    // 좁은 화면은 궤도를 더 눕히고 행성 수를 줄여야 라벨이 안 겹친다
+    const narrow = box.w > 0 && box.w < 560
+    const squash = narrow ? 0.62 : SQUASH
+    const sorted = [...tags]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, narrow ? 7 : 14)
+    const max = sorted[0]?.[1] || 1
+    const rxMax = Math.max(
+      narrow ? 108 : 130,
+      Math.min(box.w / 2 - (narrow ? 30 : 56), (box.h / 2 - 24) / squash)
+    )
+    const rxMin = narrow ? 84 : Math.min(box.h * 0.33, rxMax - 24)
+    return sorted.map(([name, n], i) => {
+      const t = sorted.length > 1 ? i / (sorted.length - 1) : 0
+      const rx = rxMin + t * (rxMax - rxMin)
+      return {
+        name,
+        n,
+        rx,
+        ry: rx * squash,
+        size: (narrow ? 7 : 8) + (n / max) * (narrow ? 11 : 15),
+        // rad/ms — 안쪽 한 바퀴 ≈ 45초, 바깥 ≈ 105초 (아주 천천히)
+        spd: 0.00006 + (1 - t) * 0.00008,
+      }
+    })
+  }, [tags, box])
+
+  useEffect(() => {
+    if (!orbits.length) return
+    if (angles.current.length !== orbits.length)
+      // 황금각으로 흩뿌려 시작 위치가 겹치지 않게
+      angles.current = orbits.map((_, i) => (i * 2.399) % (Math.PI * 2))
+
+    const place = (i: number) => {
+      const el = planetRefs.current[i]
+      if (!el) return
+      const o = orbits[i]
+      const a = angles.current[i]
+      el.style.transform = `translate(-50%, -50%) translate(${
+        Math.cos(a) * o.rx
+      }px, ${Math.sin(a) * o.ry}px)`
+      // 궤도 뒤쪽(위쪽 반원)을 지날 때 살짝 흐려져 깊이감
+      el.style.opacity =
+        pausedRef.current === i
+          ? "1"
+          : (0.58 + ((Math.sin(a) + 1) / 2) * 0.42).toFixed(3)
+    }
+
+    if (prefersReduced()) {
+      orbits.forEach((_, i) => place(i))
+      return
+    }
+
+    let raf = 0
+    let last = 0
+    const tick = (t: number) => {
+      const dt = last ? Math.min(t - last, 48) : 16
+      last = t
+      orbits.forEach((_, i) => {
+        if (pausedRef.current !== i) angles.current[i] += orbits[i].spd * dt
+        place(i)
+      })
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [orbits])
+
+  const focus = (i: number) => {
+    if (pausedRef.current === i) return
+    pausedRef.current = i
+    setFocused(i)
+  }
+
+  // 행성이 작아 조준이 어려우니, 궤도선 근처에 커서가 오면 그 행성을 잡아준다
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = wrapRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const mx = e.clientX - r.left - r.width / 2
+    const my = e.clientY - r.top - r.height / 2
+    let best = -1
+    let bestD = Infinity
+    orbits.forEach((o, i) => {
+      const d = Math.abs(Math.hypot(mx / o.rx, my / o.ry) - 1) * o.rx
+      if (d < bestD) {
+        bestD = d
+        best = i
+      }
+    })
+    focus(bestD < 18 ? best : -1)
+  }
+
+  return (
+    <div
+      className="galaxy"
+      ref={wrapRef}
+      onPointerMove={onMove}
+      onPointerLeave={() => focus(-1)}
+    >
+      {DUST.map((d, i) => (
+        <span
+          key={i}
+          className="dust"
+          style={{
+            left: `${d.x}%`,
+            top: `${d.y}%`,
+            width: d.s,
+            height: d.s,
+            animationDelay: `${d.d}s`,
+          }}
+        />
+      ))}
+
+      <svg className="rings" aria-hidden>
+        {orbits.map((o, i) => (
+          <ellipse
+            key={o.name}
+            cx="50%"
+            cy="50%"
+            rx={o.rx}
+            ry={o.ry}
+            className={focused === i ? "hot" : ""}
+          />
+        ))}
+      </svg>
+
+      <div className="core" style={{ backgroundColor: pal.accent }}>
+        <b>{total}</b>
+        <span>TAGS</span>
+      </div>
+
+      {orbits.map((o, i) => (
+        <div
+          key={o.name}
+          className={`planet${focused === i ? " on" : ""}`}
+          ref={(el) => {
+            planetRefs.current[i] = el
+          }}
+          onPointerEnter={() => focus(i)}
+          title={`#${o.name} · ${o.n}개`}
+        >
+          <span
+            className="ball"
+            style={{
+              width: o.size,
+              height: o.size,
+              backgroundColor: pal.accent,
+            }}
+          />
+          <span className="lb">#{o.name}</span>
+          <span className="cnt">{o.n}개</span>
+        </div>
+      ))}
     </div>
   )
 }
@@ -754,52 +945,199 @@ const StyledWrapper = styled.div`
     }
   }
 
-  /* ── 🫧 버블밭 ── */
-  .bubbles {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 0.25rem;
-    filter: url(#stats-goo);
+  /* ── Tag Galaxy ── */
+  .galaxy {
+    position: relative;
+    width: 100%;
+    height: ${GALAXY_H}px;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: radial-gradient(
+          70% 80% at 50% 50%,
+          ${({ theme }) =>
+            `color-mix(in srgb, ${plumOf(theme.scheme).violet} 13%, ${
+              plumOf(theme.scheme).card
+            })`}
+            0%,
+          transparent 62%
+        ),
+      radial-gradient(
+        110% 120% at 12% 8%,
+        ${({ theme }) =>
+          `color-mix(in srgb, ${plumOf(theme.scheme).accent} 9%, ${
+            plumOf(theme.scheme).card
+          })`}
+          0%,
+        transparent 55%
+      ),
+      ${({ theme }) => plumOf(theme.scheme).tint};
+
+    @media (max-width: 620px) {
+      height: 300px;
+    }
   }
-  .bub {
+  .galaxy .rings {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    ellipse {
+      fill: none;
+      stroke: ${({ theme }) => theme.colors.gray9};
+      stroke-width: 1;
+      stroke-dasharray: 2 5;
+      opacity: 0.3;
+      transition: stroke 0.3s ease, opacity 0.3s ease, stroke-width 0.3s ease;
+    }
+    ellipse.hot {
+      stroke: ${({ theme }) => plumOf(theme.scheme).accent};
+      stroke-dasharray: none;
+      stroke-width: 1.5;
+      opacity: 0.9;
+    }
+  }
+  .galaxy .dust {
+    position: absolute;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.colors.gray9};
+    pointer-events: none;
+    animation: twinkle 4s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.14;
+    }
+    50% {
+      opacity: 0.42;
+    }
+  }
+
+  /* 코어 = 전체 태그 수 */
+  .galaxy .core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 78px;
+    height: 78px;
     border-radius: 50%;
-    text-align: center;
-    cursor: default;
-    transition: transform 0.5s cubic-bezier(0.3, 1.4, 0.4, 1);
-    animation: bob ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 2;
+    color: ${({ theme }) => plumOf(theme.scheme).tagOnInk};
+    animation: corepulse 5.5s ease-in-out infinite;
 
     b {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      max-width: 90%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    span {
-      font-size: 0.625rem;
-      opacity: 0.75;
+      font-size: 1.4375rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
       font-variant-numeric: tabular-nums;
     }
+    span {
+      font-size: 0.5938rem;
+      letter-spacing: 0.14em;
+      opacity: 0.85;
+      margin-top: 0.1875rem;
+    }
 
-    :hover {
-      transform: scale(1.12) !important;
+    @media (max-width: 620px) {
+      width: 58px;
+      height: 58px;
+
+      b {
+        font-size: 1.125rem;
+      }
+      span {
+        font-size: 0.5rem;
+        margin-top: 0.125rem;
+      }
     }
   }
-  @keyframes bob {
-    from {
-      translate: 0 -4px;
+  @keyframes corepulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0.5rem
+          ${({ theme }) =>
+            `color-mix(in srgb, ${plumOf(theme.scheme).accent} 12%, transparent)`},
+        0 0 2rem -0.25rem
+          ${({ theme }) =>
+            `color-mix(in srgb, ${plumOf(theme.scheme).accent} 45%, transparent)`};
     }
-    to {
-      translate: 0 3px;
+    50% {
+      box-shadow: 0 0 0 0.9375rem
+          ${({ theme }) =>
+            `color-mix(in srgb, ${plumOf(theme.scheme).accent} 7%, transparent)`},
+        0 0 3rem -0.125rem
+          ${({ theme }) =>
+            `color-mix(in srgb, ${plumOf(theme.scheme).accent} 62%, transparent)`};
+    }
+  }
+
+  /* 궤도를 도는 태그 행성 */
+  .galaxy .planet {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1875rem;
+    z-index: 3;
+    cursor: default;
+    will-change: transform;
+
+    .ball {
+      display: block;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 transparent;
+      transition: box-shadow 0.3s ease,
+        transform 0.35s cubic-bezier(0.3, 1.5, 0.4, 1);
+    }
+    .lb {
+      font-size: 0.6563rem;
+      font-weight: 600;
+      color: ${({ theme }) => theme.colors.gray11};
+      white-space: nowrap;
+      opacity: 0.62;
+      transition: opacity 0.25s ease, color 0.25s ease;
+
+      @media (max-width: 620px) {
+        font-size: 0.5938rem;
+      }
+    }
+    .cnt {
+      display: none;
+      font-size: 0.5938rem;
+      color: ${({ theme }) => plumOf(theme.scheme).accent};
+      font-variant-numeric: tabular-nums;
+    }
+  }
+  .galaxy .planet.on {
+    z-index: 4;
+
+    .ball {
+      transform: scale(1.5);
+      box-shadow: 0 0 0 0.4375rem
+          ${({ theme }) =>
+            `color-mix(in srgb, ${plumOf(theme.scheme).accent} 16%, transparent)`},
+        0 0 1.375rem -0.125rem
+          ${({ theme }) =>
+            `color-mix(in srgb, ${plumOf(theme.scheme).accent} 60%, transparent)`};
+    }
+    .lb {
+      opacity: 1;
+      font-weight: 700;
+      color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+    }
+    .cnt {
+      display: block;
     }
   }
 
@@ -807,7 +1145,8 @@ const StyledWrapper = styled.div`
     .tile,
     .grass .cell,
     .book,
-    .bub {
+    .galaxy .core,
+    .galaxy .dust {
       transition: none;
       animation: none;
     }
