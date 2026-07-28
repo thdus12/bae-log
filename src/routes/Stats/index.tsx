@@ -128,6 +128,92 @@ const useCountUp = (target: number, active: boolean, delay = 0) => {
   return n
 }
 
+
+/**
+ * 커서와의 거리에 따라 책이 파도처럼 들리는 효과.
+ * 책 하나하나에 :hover를 거는 대신, 가까운 책들이 함께 솟았다 가라앉는다.
+ */
+const BOOK_WAVE_RADIUS = 110 // 이 거리 안의 책이 반응 (px)
+const BOOK_WAVE_LIFT = 11 // 최대 들림 (px)
+const LEAN_DEG = 9 // 기대어 있는 마지막 책의 기본 각도
+
+const useShelfWave = (
+  ref: React.RefObject<HTMLElement>,
+  deps: unknown
+) => {
+  useEffect(() => {
+    const root = ref.current
+    if (!root || typeof window === "undefined") return
+    if (prefersReduced()) return
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return
+
+    const books = Array.from(root.querySelectorAll<HTMLElement>(".book"))
+    if (!books.length) return
+
+    // 책의 기준 위치는 한 번만 재고(변형·스크롤의 영향을 받지 않도록
+    // 컨테이너 기준 좌표로 저장), 레이아웃이 바뀔 때만 다시 잰다.
+    let spots: { x: number; y: number; lean: boolean }[] = []
+    const measure = () => {
+      const base = root.getBoundingClientRect()
+      spots = books.map((b) => {
+        const r = b.getBoundingClientRect()
+        return {
+          x: r.left + r.width / 2 - base.left,
+          y: r.bottom - base.top, // 책 밑동(선반 높이)은 들려도 안 변한다
+          lean: b.classList.contains("lean"),
+        }
+      })
+    }
+    measure()
+
+    let frame = 0
+    let pending: { x: number; y: number } | null = null
+
+    const apply = () => {
+      frame = 0
+      if (!pending) return
+      const { x, y } = pending
+      books.forEach((b, i) => {
+        const s = spots[i]
+        if (!s) return
+        // 다른 줄의 책까지 반응하지 않도록 세로 거리로 한 번 거른다
+        const near = y > s.y - 150 && y < s.y + 60
+        const k = near ? Math.max(0, 1 - Math.abs(x - s.x) / BOOK_WAVE_RADIUS) : 0
+        const eased = k * k * (3 - 2 * k) // smoothstep
+        const tilt =
+          (s.lean ? LEAN_DEG : 0) + (x > s.x ? -1 : 1) * eased * 3.5
+        b.style.transform = `translateY(${-eased * BOOK_WAVE_LIFT}px) rotate(${tilt}deg)`
+        b.style.filter = eased > 0.02 ? `brightness(${1 + eased * 0.14})` : ""
+      })
+    }
+
+    const onMove = (e: PointerEvent) => {
+      const base = root.getBoundingClientRect()
+      pending = { x: e.clientX - base.left, y: e.clientY - base.top }
+      if (!frame) frame = requestAnimationFrame(apply)
+    }
+    const onLeave = () => {
+      pending = null
+      if (frame) cancelAnimationFrame(frame)
+      frame = 0
+      books.forEach((b, i) => {
+        b.style.transform = spots[i]?.lean ? `rotate(${LEAN_DEG}deg)` : ""
+        b.style.filter = ""
+      })
+    }
+
+    root.addEventListener("pointermove", onMove)
+    root.addEventListener("pointerleave", onLeave)
+    window.addEventListener("resize", measure)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      root.removeEventListener("pointermove", onMove)
+      root.removeEventListener("pointerleave", onLeave)
+      window.removeEventListener("resize", measure)
+    }
+  }, [ref, deps])
+}
+
 // 책등 높이 패턴 (책장 느낌)
 const BOOK_H = [42, 50, 46, 54, 44]
 // 한 칸에 표시할 최대 책 수 (넘으면 +N)
@@ -233,6 +319,8 @@ const Stats: React.FC<Props> = () => {
 
   const [grassRef, grassIn] = useInView<HTMLDivElement>()
   const [shelfRef, shelfIn] = useInView<HTMLDivElement>()
+  // 책이 다 자란 뒤에 기준 위치를 재도록 shelfIn까지 의존성에 넣는다
+  useShelfWave(shelfRef, `${data.categories.length}-${shelfIn}`)
 
   return (
     <StyledWrapper>
@@ -917,23 +1005,9 @@ const StyledWrapper = styled.div`
     margin-left: 3px;
   }
 
-  /* 책을 꺼내 드는 호버 (마우스 쓰는 환경에서만) */
+  /* 책 들림은 useShelfWave가 커서와의 거리로 계산해 인라인 transform으로 준다.
+     (CSS :hover는 정확히 그 책 위에 있어야만 걸려서 파도처럼 번지지 않는다) */
   @media (hover: hover) and (pointer: fine) {
-    .book:hover {
-      transform: translateY(-8px);
-      filter: brightness(1.1);
-    }
-    .book.lean:hover {
-      transform: translateY(-8px) rotate(9deg);
-    }
-    /* 빠진 자리로 양옆 책이 기울어진다 */
-    .book:not(.lean):hover + .book:not(.lean) {
-      transform: rotate(5deg);
-    }
-    .book:not(.lean):has(+ .book:not(.lean):hover) {
-      transform: rotate(-5deg);
-    }
-
     /* 칸 전체에 올리면 선반과 라벨이 살아난다 */
     .bgroup:hover .books {
       border-bottom-color: ${({ theme }) => plumOf(theme.scheme).accent};
