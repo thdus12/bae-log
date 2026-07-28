@@ -20,6 +20,14 @@ const useCodeCopy = () => {
         const match = (code?.className || "").match(/language-([\w-]+)/)
         const lang = match ? match[1] : "code"
 
+        // 머메이드 블럭은 useMermaidEffect가 코드를 다이어그램(SVG)으로 바꾼다.
+        // 여기에 언어 라벨과 복사 버튼을 얹으면 그림 위에 뜨고,
+        // 복사해도 원본 코드가 아니라 SVG가 복사되므로 건너뛴다.
+        if (lang === "mermaid" || block.querySelector(".language-mermaid")) {
+          block.dataset.mermaid = "true"
+          return
+        }
+
         const bar = document.createElement("div")
         bar.className = "code-bar"
 
