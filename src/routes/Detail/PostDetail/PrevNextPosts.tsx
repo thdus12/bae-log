@@ -5,8 +5,9 @@ import usePostQuery from "src/hooks/usePostQuery"
 import usePostsQuery from "src/hooks/usePostsQuery"
 import { plumOf } from "src/styles/plum"
 
-// 글 목록(최신순)에서 현재 글의 앞뒤 글을 찾아 내비 카드로 보여준다.
-// 앞/뒤 글이 없어도 영역은 유지하고 "없음"을 비활성 상태로 표시한다.
+// 글 목록(최신순)에서 현재 글의 앞뒤 글을 찾아 내비로 보여준다.
+// 본문/댓글 카드와 같은 언어의 단일 카드 안에 좌우로 배치하고,
+// 앞/뒤 글이 없어도 슬롯을 유지하며 "없음"을 비활성으로 표시한다.
 const PrevNextPosts: React.FC = () => {
   const current = usePostQuery()
   const posts = usePostsQuery().filter((p) => p.type?.[0] === "Post")
@@ -21,23 +22,24 @@ const PrevNextPosts: React.FC = () => {
   return (
     <StyledWrapper>
       {older ? (
-        <Link className="card" href={`/${older.slug}`}>
+        <Link className="slot" href={`/${older.slug}`}>
           <div className="dir">← 이전 글</div>
           <div className="pt">{older.title}</div>
         </Link>
       ) : (
-        <div className="card empty">
+        <div className="slot empty">
           <div className="dir">← 이전 글</div>
           <div className="pt none">없음</div>
         </div>
       )}
+      <div className="divider" />
       {newer ? (
-        <Link className="card next" href={`/${newer.slug}`}>
+        <Link className="slot next" href={`/${newer.slug}`}>
           <div className="dir">다음 글 →</div>
           <div className="pt">{newer.title}</div>
         </Link>
       ) : (
-        <div className="card next empty">
+        <div className="slot next empty">
           <div className="dir">다음 글 →</div>
           <div className="pt none">없음</div>
         </div>
@@ -50,25 +52,37 @@ export default PrevNextPosts
 
 const StyledWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-  /* 본문 카드와 같은 폭으로 중앙 정렬 (카드 밖 독립 영역) */
+  grid-template-columns: 1fr 1px 1fr;
+  align-items: stretch;
   max-width: 52rem;
-  margin: 0.75rem auto;
+  margin: 2rem auto 0;
+  padding: 0.5rem;
+  border-radius: 1.5rem;
+  background-color: ${({ theme }) => plumOf(theme.scheme).card};
+  border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   @media (max-width: 620px) {
     grid-template-columns: 1fr;
   }
 
-  .card {
+  .divider {
+    background-color: ${({ theme }) => plumOf(theme.scheme).line};
+    margin: 0.5rem 0;
+
+    @media (max-width: 620px) {
+      height: 1px;
+      margin: 0 0.75rem;
+    }
+  }
+
+  .slot {
     display: block;
-    background-color: ${({ theme }) => plumOf(theme.scheme).card};
-    border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
-    border-radius: 0.875rem;
-    padding: 0.75rem 1rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 1rem;
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1),
-      border-color 0.15s ease;
+    transition: background-color 0.15s ease;
 
     .dir {
       font-size: 0.6875rem;
@@ -86,30 +100,31 @@ const StyledWrapper = styled.div`
     }
 
     :hover {
-      transform: translateY(-2px);
-      border-color: ${({ theme }) => plumOf(theme.scheme).accent};
+      background-color: ${({ theme }) => plumOf(theme.scheme).tint};
 
       .pt {
         color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
       }
     }
   }
-  .card.next {
+  .slot.next {
     text-align: right;
   }
 
   /* 앞/뒤 글이 없는 슬롯: 비활성 표시 */
-  .card.empty {
+  .slot.empty {
     cursor: default;
-    opacity: 0.6;
 
+    .dir {
+      opacity: 0.6;
+    }
     .pt.none {
       font-weight: 500;
       color: ${({ theme }) => theme.colors.gray9};
+      opacity: 0.7;
     }
     :hover {
-      transform: none;
-      border-color: ${({ theme }) => plumOf(theme.scheme).line};
+      background-color: transparent;
 
       .pt.none {
         color: ${({ theme }) => theme.colors.gray9};
@@ -118,7 +133,7 @@ const StyledWrapper = styled.div`
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card {
+    .slot {
       transition: none;
     }
   }
