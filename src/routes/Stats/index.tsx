@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import styled from "@emotion/styled"
 import usePostsQuery from "src/hooks/usePostsQuery"
 import { plumOf } from "src/styles/plum"
@@ -6,14 +6,76 @@ import { plumOf } from "src/styles/plum"
 type Props = {}
 
 const dateOf = (p: any) => new Date(p?.date?.start_date || p.createdTime)
+const prefersReduced = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+// 요소가 화면에 들어오면 true (모션 줄이기 시 즉시 true)
+const useInView = <T extends HTMLElement>(): [
+  React.RefObject<T>,
+  boolean
+] => {
+  const ref = useRef<T>(null)
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    if (prefersReduced()) {
+      setInView(true)
+      return
+    }
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setInView(true)
+            io.disconnect()
+          }
+        })
+      },
+      { threshold: 0.25 }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+  return [ref, inView]
+}
+
+// 0 → target 카운트업 (easeOutCubic)
+const useCountUp = (target: number, active: boolean, delay = 0) => {
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    if (!active) return
+    if (prefersReduced()) {
+      setN(target)
+      return
+    }
+    let raf = 0
+    let start = 0
+    const dur = 1100
+    const tick = (t: number) => {
+      if (!start) start = t
+      const elapsed = t - start - delay
+      if (elapsed < 0) {
+        raf = requestAnimationFrame(tick)
+        return
+      }
+      const p = Math.min(1, elapsed / dur)
+      const eased = 1 - Math.pow(1 - p, 3)
+      setN(Math.round(target * eased))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, active, delay])
+  return n
+}
 
 const Stats: React.FC<Props> = () => {
   const posts = usePostsQuery().filter((p) => p.type?.[0] === "Post")
 
   const data = useMemo(() => {
     const total = posts.length
-
-    // 카테고리별 글 수 (내림차순)
     const catMap = new Map<string, number>()
     posts.forEach((p) => {
       const c = p.category?.[0]
@@ -21,15 +83,14 @@ const Stats: React.FC<Props> = () => {
     })
     const categories = [...catMap.entries()].sort((a, b) => b[1] - a[1])
 
-    // 태그별 글 수 Top 10
     const tagMap = new Map<string, number>()
     posts.forEach((p) =>
       p.tags?.forEach((t) => tagMap.set(t, (tagMap.get(t) || 0) + 1))
     )
-    const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1])
-    const topTags = tags.slice(0, 10)
+    const topTags = [...tagMap.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
 
-    // 연도별 발행 수 (오래된→최신)
     const yearMap = new Map<string, number>()
     posts.forEach((p) => {
       const y = String(dateOf(p).getFullYear())
@@ -37,7 +98,6 @@ const Stats: React.FC<Props> = () => {
     })
     const years = [...yearMap.entries()].sort((a, b) => +a[0] - +b[0])
 
-    // 활동 기간(개월) — 첫 글부터 지금까지
     let months = 0
     if (posts.length) {
       const times = posts.map((p) => dateOf(p).getTime())
@@ -48,7 +108,6 @@ const Stats: React.FC<Props> = () => {
         (now.getMonth() - first.getMonth()) +
         1
     }
-
     return {
       total,
       categoryCount: catMap.size,
@@ -64,6 +123,13 @@ const Stats: React.FC<Props> = () => {
   const maxTag = data.topTags[0]?.[1] || 1
   const maxYear = Math.max(1, ...data.years.map(([, n]) => n))
 
+  const [tilesActive, setTilesActive] = useState(false)
+  useEffect(() => setTilesActive(true), [])
+
+  const [catRef, catIn] = useInView<HTMLDivElement>()
+  const [tagRef, tagIn] = useInView<HTMLDivElement>()
+  const [yearRef, yearIn] = useInView<HTMLDivElement>()
+
   return (
     <StyledWrapper>
       <header className="head">
@@ -71,19 +137,17 @@ const Stats: React.FC<Props> = () => {
         <p>지금까지 쌓아온 기록을 숫자로.</p>
       </header>
 
-      {/* 요약 타일 */}
       <div className="tiles">
-        <Tile label="총 글" value={data.total} unit="개" />
-        <Tile label="카테고리" value={data.categoryCount} unit="개" />
-        <Tile label="태그" value={data.tagCount} unit="개" />
-        <Tile label="활동 기간" value={data.months} unit="개월" />
+        <Tile label="총 글" value={data.total} unit="개" active={tilesActive} delay={0} />
+        <Tile label="카테고리" value={data.categoryCount} unit="개" active={tilesActive} delay={90} />
+        <Tile label="태그" value={data.tagCount} unit="개" active={tilesActive} delay={180} />
+        <Tile label="활동 기간" value={data.months} unit="개월" active={tilesActive} delay={270} />
       </div>
 
-      {/* 카테고리별 */}
       <section className="panel">
         <h2>카테고리별 글</h2>
-        <div className="bars">
-          {data.categories.map(([name, n]) => (
+        <div className="bars" ref={catRef}>
+          {data.categories.map(([name, n], i) => (
             <div className="row" key={name}>
               <span className="name" title={name}>
                 {name}
@@ -91,7 +155,10 @@ const Stats: React.FC<Props> = () => {
               <span className="track">
                 <span
                   className="fill"
-                  style={{ width: `${(n / maxCat) * 100}%` }}
+                  style={{
+                    width: catIn ? `${(n / maxCat) * 100}%` : "0%",
+                    transitionDelay: `${i * 70}ms`,
+                  }}
                 />
               </span>
               <span className="val">{n}</span>
@@ -101,11 +168,10 @@ const Stats: React.FC<Props> = () => {
         </div>
       </section>
 
-      {/* 태그 Top 10 */}
       <section className="panel">
         <h2>많이 쓴 태그 Top 10</h2>
-        <div className="bars">
-          {data.topTags.map(([name, n]) => (
+        <div className="bars" ref={tagRef}>
+          {data.topTags.map(([name, n], i) => (
             <div className="row" key={name}>
               <span className="name" title={name}>
                 #{name}
@@ -113,7 +179,10 @@ const Stats: React.FC<Props> = () => {
               <span className="track">
                 <span
                   className="fill"
-                  style={{ width: `${(n / maxTag) * 100}%` }}
+                  style={{
+                    width: tagIn ? `${(n / maxTag) * 100}%` : "0%",
+                    transitionDelay: `${i * 60}ms`,
+                  }}
                 />
               </span>
               <span className="val">{n}</span>
@@ -123,16 +192,18 @@ const Stats: React.FC<Props> = () => {
         </div>
       </section>
 
-      {/* 연도별 발행 */}
       <section className="panel">
         <h2>연도별 발행</h2>
-        <div className="years">
-          {data.years.map(([y, n]) => (
+        <div className="years" ref={yearRef}>
+          {data.years.map(([y, n], i) => (
             <div className="ybar" key={y}>
               <span className="ynum">{n}</span>
               <span
                 className="ycol"
-                style={{ height: `${Math.max(6, (n / maxYear) * 100)}%` }}
+                style={{
+                  height: yearIn ? `${Math.max(6, (n / maxYear) * 100)}%` : "0%",
+                  transitionDelay: `${i * 90}ms`,
+                }}
               />
               <span className="ylabel">{y}</span>
             </div>
@@ -144,19 +215,24 @@ const Stats: React.FC<Props> = () => {
   )
 }
 
-const Tile: React.FC<{ label: string; value: number; unit: string }> = ({
-  label,
-  value,
-  unit,
-}) => (
-  <div className="tile">
-    <div className="tlabel">{label}</div>
-    <div className="tvalue">
-      {value}
-      <span className="tunit">{unit}</span>
+const Tile: React.FC<{
+  label: string
+  value: number
+  unit: string
+  active: boolean
+  delay: number
+}> = ({ label, value, unit, active, delay }) => {
+  const n = useCountUp(value, active, delay)
+  return (
+    <div className="tile">
+      <div className="tlabel">{label}</div>
+      <div className="tvalue">
+        {n}
+        <span className="tunit">{unit}</span>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Stats
 
@@ -179,7 +255,6 @@ const StyledWrapper = styled.div`
     }
   }
 
-  /* 요약 타일 */
   .tiles {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -195,6 +270,13 @@ const StyledWrapper = styled.div`
     border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
     border-radius: 1rem;
     padding: 1.125rem 1.25rem;
+    transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1),
+      border-color 0.2s ease;
+
+    :hover {
+      transform: translateY(-2px);
+      border-color: ${({ theme }) => plumOf(theme.scheme).accent};
+    }
 
     .tlabel {
       font-size: 0.75rem;
@@ -217,7 +299,6 @@ const StyledWrapper = styled.div`
     }
   }
 
-  /* 패널 */
   .panel {
     background-color: ${({ theme }) => plumOf(theme.scheme).card};
     border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
@@ -237,7 +318,6 @@ const StyledWrapper = styled.div`
     }
   }
 
-  /* 가로 막대 */
   .bars {
     display: flex;
     flex-direction: column;
@@ -276,6 +356,8 @@ const StyledWrapper = styled.div`
         ${({ theme }) => plumOf(theme.scheme).violet},
         ${({ theme }) => plumOf(theme.scheme).accent}
       );
+      /* 스크롤 진입 시 왼쪽에서 자라남 */
+      transition: width 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     .val {
       font-size: 0.8125rem;
@@ -284,9 +366,11 @@ const StyledWrapper = styled.div`
       color: ${({ theme }) => theme.colors.gray11};
       font-variant-numeric: tabular-nums;
     }
+    :hover .fill {
+      filter: brightness(1.08);
+    }
   }
 
-  /* 연도별 세로 막대 */
   .years {
     display: flex;
     align-items: flex-end;
@@ -318,11 +402,24 @@ const StyledWrapper = styled.div`
         ${({ theme }) => plumOf(theme.scheme).accent},
         ${({ theme }) => plumOf(theme.scheme).violet}
       );
+      /* 스크롤 진입 시 아래에서 솟아오름 */
+      transition: height 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    :hover .ycol {
+      filter: brightness(1.08);
     }
     .ylabel {
       font-size: 0.75rem;
       color: ${({ theme }) => theme.colors.gray9};
       font-variant-numeric: tabular-nums;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile,
+    .row .fill,
+    .ybar .ycol {
+      transition: none;
     }
   }
 `
