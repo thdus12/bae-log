@@ -8,6 +8,47 @@ import { plumOf } from "src/styles/plum"
 type Props = {}
 
 const dateOf = (p: any) => new Date(p?.date?.start_date || p.createdTime)
+const dayKey = (d: Date) =>
+  `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+
+type Cell = { date: Date; count: number } | null
+
+// 깃허브 잔디 스타일: 일요일 시작 주 단위 열로 1년을 채운다
+const buildYearGrid = (year: number, dayMap: Map<string, number>) => {
+  const start = new Date(year, 0, 1)
+  start.setDate(start.getDate() - start.getDay()) // 그 주 일요일까지 back
+  const endOfYear = new Date(year, 11, 31)
+  const last = new Date(year, 11, 31 + (6 - endOfYear.getDay())) // 그 주 토요일까지
+
+  const weeks: Cell[][] = []
+  let week: Cell[] = []
+  for (let d = new Date(start); d <= last; d.setDate(d.getDate() + 1)) {
+    week.push(
+      d.getFullYear() === year
+        ? { date: new Date(d), count: dayMap.get(dayKey(d)) || 0 }
+        : null
+    )
+    if (week.length === 7) {
+      weeks.push(week)
+      week = []
+    }
+  }
+
+  // 월 라벨: 각 월이 처음 등장하는 열
+  const monthLabels: { col: number; text: string }[] = []
+  let lastMonth = -1
+  weeks.forEach((w, i) => {
+    const first = w.find(Boolean) as Exclude<Cell, null> | undefined
+    if (!first) return
+    const m = first.date.getMonth()
+    if (m !== lastMonth) {
+      lastMonth = m
+      monthLabels.push({ col: i, text: `${m + 1}월` })
+    }
+  })
+
+  return { weeks, monthLabels }
+}
 const prefersReduced = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -97,9 +138,15 @@ const Stats: React.FC<Props> = () => {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 14)
 
-    // 연×월 잔디
+    // 일별 잔디: "YYYY-M-D" → 글 수
+    const dayMap = new Map<string, number>()
+    posts.forEach((p) => {
+      const k = dayKey(dateOf(p))
+      dayMap.set(k, (dayMap.get(k) || 0) + 1)
+    })
+
     let months = 0
-    let grass: { year: number; cells: number[] }[] = []
+    let years: number[] = []
     if (posts.length) {
       const times = posts.map((p) => dateOf(p).getTime())
       const first = new Date(Math.min(...times))
@@ -108,16 +155,8 @@ const Stats: React.FC<Props> = () => {
         (now.getFullYear() - first.getFullYear()) * 12 +
         (now.getMonth() - first.getMonth()) +
         1
-      for (let y = first.getFullYear(); y <= now.getFullYear(); y++) {
-        grass.push({ year: y, cells: Array(12).fill(0) })
-      }
-      posts.forEach((p) => {
-        const d = dateOf(p)
-        const row = grass.find((g) => g.year === d.getFullYear())
-        if (row) row.cells[d.getMonth()] += 1
-      })
+      for (let y = now.getFullYear(); y >= first.getFullYear(); y--) years.push(y)
     }
-    const maxCell = Math.max(1, ...grass.flatMap((g) => g.cells))
 
     return {
       total,
@@ -126,19 +165,40 @@ const Stats: React.FC<Props> = () => {
       months,
       categories,
       topTags,
-      grass,
-      maxCell,
+      dayMap,
+      years,
     }
   }, [posts])
 
   const maxTag = data.topTags[0]?.[1] || 1
+
+  // 선택된 연도의 일별 그리드
+  const [year, setYear] = useState<number>(() => new Date().getFullYear())
+  useEffect(() => {
+    if (data.years.length && !data.years.includes(year)) setYear(data.years[0])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.years])
+
+  const grid = useMemo(
+    () => buildYearGrid(year, data.dayMap),
+    [year, data.dayMap]
+  )
+  const yearTotal = useMemo(
+    () =>
+      grid.weeks
+        .flat()
+        .reduce((sum, c) => sum + (c ? c.count : 0), 0),
+    [grid]
+  )
+  // 하루 최대 글 수 (농도 기준, 최소 4단계 보장)
+  const maxDay = Math.max(2, ...Array.from(data.dayMap.values()))
 
   // 잔디 셀 색: 0이면 흙(틴트), 많을수록 진한 플럼
   const cellColor = (c: number) =>
     c === 0
       ? pal.tint
       : `color-mix(in srgb, ${pal.accent} ${Math.round(
-          30 + 55 * (c / data.maxCell)
+          32 + 55 * Math.min(1, c / maxDay)
         )}%, ${pal.card})`
 
   // 책등 색: 플럼 패밀리 순환
@@ -174,52 +234,90 @@ const Stats: React.FC<Props> = () => {
 
       {/* 🌱 잔디밭 */}
       <section className="panel">
-        <h2>🌱 기록의 잔디밭</h2>
+        <div className="phead">
+          <h2>
+            🌱 기록의 잔디밭
+            <small>
+              {year}년 · {yearTotal}개
+            </small>
+          </h2>
+          <div className="yearpick">
+            {data.years.map((y) => (
+              <button
+                key={y}
+                type="button"
+                data-active={y === year}
+                onClick={() => setYear(y)}
+              >
+                {y}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="grass" ref={grassRef}>
-          <div className="grow monthhead">
-            <span className="ylab" />
-            <div className="cells">
-              {Array.from({ length: 12 }).map((_, m) => (
-                <span className="mlab" key={m}>
-                  {m + 1}
+          <div className="cal">
+            {/* 월 라벨 */}
+            <div
+              className="months"
+              style={{ gridTemplateColumns: `repeat(${grid.weeks.length}, var(--cell))` }}
+            >
+              {grid.monthLabels.map((m) => (
+                <span key={m.col} style={{ gridColumnStart: m.col + 1 }}>
+                  {m.text}
                 </span>
               ))}
             </div>
-          </div>
-          {data.grass.map((row, ri) => (
-            <div className="grow" key={row.year}>
-              <span className="ylab">{row.year}</span>
-              <div className="cells">
-                {row.cells.map((c, mi) => (
-                  <span
-                    key={mi}
-                    className="cell"
-                    title={`${row.year}년 ${mi + 1}월 · ${c}개`}
-                    style={{
-                      backgroundColor: cellColor(c),
-                      transform: grassIn ? "scale(1)" : "scale(0)",
-                      transitionDelay: `${(ri * 12 + mi) * 14}ms`,
-                    }}
-                  />
+
+            <div className="calbody">
+              {/* 요일 라벨 (월·수·금만) */}
+              <div className="wdays">
+                {["", "월", "", "수", "", "금", ""].map((w, i) => (
+                  <span key={i}>{w}</span>
+                ))}
+              </div>
+
+              <div className="weeks" key={`${year}-${grassIn}`}>
+                {grid.weeks.map((w, ci) => (
+                  <div className="week" key={ci}>
+                    {w.map((cell, ri) =>
+                      cell ? (
+                        <span
+                          key={ri}
+                          className={`cell ${grassIn ? "pop" : "idle"}`}
+                          title={`${cell.date.getFullYear()}년 ${
+                            cell.date.getMonth() + 1
+                          }월 ${cell.date.getDate()}일 · ${cell.count}개`}
+                          style={{
+                            backgroundColor: cellColor(cell.count),
+                            animationDelay: `${ci * 9}ms`,
+                          }}
+                        />
+                      ) : (
+                        <span key={ri} className="cell blank" />
+                      )
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
-          ))}
+          </div>
+
           <div className="legend">
             <span>적음</span>
-            {[0.25, 0.5, 0.75, 1].map((r) => (
+            {[0, 0.34, 0.67, 1].map((r) => (
               <i
                 key={r}
                 style={{
                   backgroundColor: `color-mix(in srgb, ${pal.accent} ${Math.round(
-                    30 + 55 * r
+                    32 + 55 * r
                   )}%, ${pal.card})`,
                 }}
               />
             ))}
             <span>많음</span>
           </div>
-          {!data.grass.length && <p className="empty">아직 없어요.</p>}
+          {!data.years.length && <p className="empty">아직 없어요.</p>}
         </div>
       </section>
 
@@ -421,44 +519,140 @@ const StyledWrapper = styled.div`
     }
   }
 
-  /* ── 🌱 잔디밭 ── */
-  .grass {
-    .grow {
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
-      margin-bottom: 0.375rem;
+  /* ── 패널 헤더 (제목 + 연도 선택) ── */
+  .phead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+
+    h2 {
+      margin-bottom: 0;
     }
-    .ylab {
-      width: 2.75rem;
-      flex-shrink: 0;
+  }
+  .yearpick {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+
+    button {
       font-size: 0.75rem;
-      color: ${({ theme }) => theme.colors.gray9};
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: 999px;
+      cursor: pointer;
+      color: ${({ theme }) => theme.colors.gray10};
+      background-color: transparent;
+      border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
       font-variant-numeric: tabular-nums;
-      text-align: right;
+      transition: background-color 0.15s ease, color 0.15s ease,
+        border-color 0.15s ease;
+
+      :hover {
+        color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+        background-color: ${({ theme }) => plumOf(theme.scheme).tint};
+      }
+      &[data-active="true"] {
+        color: ${({ theme }) => plumOf(theme.scheme).tagOnInk};
+        background-color: ${({ theme }) => plumOf(theme.scheme).tagOnBg};
+        border-color: transparent;
+      }
     }
-    .cells {
+  }
+
+  /* ── 🌱 잔디밭 (깃허브 스타일 일별 그리드) ── */
+  .grass {
+    --cell: 11px;
+    --gap: 3px;
+
+    @media (max-width: 720px) {
+      --cell: 9px;
+      --gap: 2px;
+    }
+
+    .cal {
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .months {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 0.25rem;
-      flex: 1;
+      gap: var(--gap);
+      margin-left: calc(1.5rem + var(--gap));
+      margin-bottom: 0.3125rem;
+      min-width: min-content;
+
+      span {
+        font-size: 0.625rem;
+        color: ${({ theme }) => theme.colors.gray9};
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
     }
-    .mlab {
-      font-size: 0.6875rem;
-      color: ${({ theme }) => theme.colors.gray8};
-      text-align: center;
-      font-variant-numeric: tabular-nums;
+    .calbody {
+      display: flex;
+      gap: var(--gap);
+      min-width: min-content;
+    }
+    .wdays {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      width: 1.5rem;
+      flex-shrink: 0;
+
+      span {
+        height: var(--cell);
+        font-size: 0.625rem;
+        line-height: var(--cell);
+        color: ${({ theme }) => theme.colors.gray9};
+      }
+    }
+    .weeks {
+      display: flex;
+      gap: var(--gap);
+    }
+    .week {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
     }
     .cell {
-      aspect-ratio: 1;
-      border-radius: 0.3125rem;
-      transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.4, 1),
-        background-color 0.2s ease;
+      width: var(--cell);
+      height: var(--cell);
+      border-radius: 2.5px;
       cursor: default;
+      transition: background-color 0.2s ease;
 
       :hover {
         outline: 2px solid ${({ theme }) => plumOf(theme.scheme).accent};
         outline-offset: 1px;
+      }
+    }
+    .cell.blank {
+      background-color: transparent !important;
+      pointer-events: none;
+    }
+    .cell.idle {
+      transform: scale(0);
+      opacity: 0;
+    }
+    .cell.pop {
+      animation: cellpop 0.4s cubic-bezier(0.3, 1.4, 0.4, 1) backwards;
+    }
+    @keyframes cellpop {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
       }
     }
     .legend {
@@ -612,6 +806,10 @@ const StyledWrapper = styled.div`
     .bub {
       transition: none;
       animation: none;
+    }
+    .grass .cell.idle {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 `
