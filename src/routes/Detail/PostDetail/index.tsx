@@ -148,7 +148,7 @@ const ContentWrapper = styled.div`
 `
 
 const CommentWrapper = styled.div`
-  margin: 2rem auto 0;
+  margin: 1rem auto 0;
   padding: 2rem 1.5rem;
   border-radius: 1.5rem;
   max-width: 52rem; // 읽기 편한 폭
