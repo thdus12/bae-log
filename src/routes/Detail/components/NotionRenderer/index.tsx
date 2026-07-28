@@ -124,6 +124,19 @@ const StyledWrapper = styled.div<StyledWrapperProps>`
       theme === "dark" ? "#2d2d2d" : "#f7f6f3"};
   }
 
+  /* 머메이드 블럭은 코드가 아니라 다이어그램으로 그려지므로
+     코드바도, 코드바용 상단 패딩도 필요 없다 */
+  .notion-code[data-mermaid="true"] {
+    padding-top: 1rem !important;
+    background-color: transparent;
+    text-align: center;
+
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
   /* 코드블럭 상단 바: 언어 라벨 + 복사 버튼 (useCodeCopy가 주입) */
   .notion-code {
     position: relative;
