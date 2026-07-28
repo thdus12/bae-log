@@ -113,6 +113,8 @@ const useCountUp = (target: number, active: boolean, delay = 0) => {
 
 // 책등 높이 패턴 (책장 느낌)
 const BOOK_H = [42, 50, 46, 54, 44]
+// 한 칸에 표시할 최대 책 수 (넘으면 +N)
+const MAX_BOOKS = 10
 
 const Stats: React.FC<Props> = () => {
   const posts = usePostsQuery().filter((p) => p.type?.[0] === "Post")
@@ -329,9 +331,9 @@ const Stats: React.FC<Props> = () => {
             {data.categories.map(([name, n], gi) => (
               <div className="bgroup" key={name}>
                 <div className="books">
-                  {Array.from({ length: Math.min(n, 14) }).map((_, i) => {
+                  {Array.from({ length: Math.min(n, MAX_BOOKS) }).map((_, i) => {
                     const h = BOOK_H[(gi + i) % BOOK_H.length]
-                    const isLast = i === Math.min(n, 14) - 1 && n > 1
+                    const isLast = i === Math.min(n, MAX_BOOKS) - 1 && n > 1
                     return (
                       <span
                         key={i}
@@ -344,7 +346,7 @@ const Stats: React.FC<Props> = () => {
                       />
                     )
                   })}
-                  {n > 14 && <span className="more">+{n - 14}</span>}
+                  {n > MAX_BOOKS && <span className="more">+{n - MAX_BOOKS}</span>}
                 </div>
                 <div className="glabel" title={name}>
                   <span className="gname">{name}</span>
@@ -678,32 +680,33 @@ const StyledWrapper = styled.div`
     }
   }
 
-  /* ── 📚 책장 ── */
-  .shelfwrap {
-    overflow-x: auto;
-    scrollbar-width: none;
-    ::-webkit-scrollbar {
-      display: none;
-    }
-  }
+  /* ── 📚 책장 (한 줄 4칸, 줄바꿈) ── */
   .shelf {
-    display: flex;
-    align-items: flex-end;
-    gap: 1.75rem;
-    padding: 0.5rem 0.25rem 0;
-    border-bottom: 3px solid ${({ theme }) => plumOf(theme.scheme).line};
-    min-width: min-content;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem 1rem;
+
+    @media (max-width: 720px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
   .bgroup {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-width: 0;
   }
   .books {
     display: flex;
     align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap-reverse;
     gap: 3px;
+    width: 100%;
     min-height: 54px;
+    /* 각 칸이 하나의 선반 */
+    border-bottom: 3px solid ${({ theme }) => plumOf(theme.scheme).line};
+    padding: 0 0.25rem;
   }
   .book {
     width: 11px;
@@ -726,10 +729,10 @@ const StyledWrapper = styled.div`
   .glabel {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.375rem;
-    margin-top: 0.625rem;
-    padding-bottom: 0.75rem;
-    max-width: 8.5rem;
+    margin-top: 0.5rem;
+    max-width: 100%;
 
     .gname {
       font-size: 0.75rem;
