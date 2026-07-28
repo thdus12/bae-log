@@ -55,9 +55,9 @@ const StyledWrapper = styled.div`
   grid-template-columns: 1fr 1px 1fr;
   align-items: stretch;
   max-width: 52rem;
-  margin: 2rem auto 0;
-  padding: 0.5rem;
-  border-radius: 1.5rem;
+  margin: 1rem auto 0;
+  padding: 0.375rem;
+  border-radius: 1.25rem;
   background-color: ${({ theme }) => plumOf(theme.scheme).card};
   border: 1px solid ${({ theme }) => plumOf(theme.scheme).line};
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -79,8 +79,8 @@ const StyledWrapper = styled.div`
 
   .slot {
     display: block;
-    padding: 0.875rem 1.25rem;
-    border-radius: 1rem;
+    padding: 0.75rem 1.125rem;
+    border-radius: 0.875rem;
     cursor: pointer;
     transition: background-color 0.15s ease;
 
