@@ -485,8 +485,8 @@ const TagGalaxy: React.FC<{
         rx,
         ry: rx * squash,
         size: (narrow ? 7 : 8) + (n / max) * (narrow ? 11 : 15),
-        // rad/ms — 안쪽 한 바퀴 ≈ 45초, 바깥 ≈ 105초 (아주 천천히)
-        spd: 0.00006 + (1 - t) * 0.00008,
+        // rad/ms — 안쪽 한 바퀴 ≈ 90초, 바깥 ≈ 210초 (아주 천천히)
+        spd: 0.00003 + (1 - t) * 0.00004,
       }
     })
   }, [tags, box])
