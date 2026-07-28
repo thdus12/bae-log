@@ -899,17 +899,50 @@ const StyledWrapper = styled.div`
     /* 각 칸이 하나의 선반 */
     border-bottom: 3px solid ${({ theme }) => plumOf(theme.scheme).line};
     padding: 0 0.25rem;
+    transition: border-color 0.25s ease;
   }
   .book {
     width: 11px;
     border-radius: 3px 3px 0 0;
-    transition: height 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transform-origin: bottom center;
+    transition: height 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.28s ease;
   }
   /* 마지막 책은 옆으로 삐딱하게 기대어 있음 */
   .book.lean {
     transform: rotate(9deg);
     transform-origin: bottom left;
     margin-left: 3px;
+  }
+
+  /* 책을 꺼내 드는 호버 (마우스 쓰는 환경에서만) */
+  @media (hover: hover) and (pointer: fine) {
+    .book:hover {
+      transform: translateY(-8px);
+      filter: brightness(1.1);
+    }
+    .book.lean:hover {
+      transform: translateY(-8px) rotate(9deg);
+    }
+    /* 빠진 자리로 양옆 책이 기울어진다 */
+    .book:not(.lean):hover + .book:not(.lean) {
+      transform: rotate(5deg);
+    }
+    .book:not(.lean):has(+ .book:not(.lean):hover) {
+      transform: rotate(-5deg);
+    }
+
+    /* 칸 전체에 올리면 선반과 라벨이 살아난다 */
+    .bgroup:hover .books {
+      border-bottom-color: ${({ theme }) => plumOf(theme.scheme).accent};
+    }
+    .bgroup:hover .glabel .gname {
+      color: ${({ theme }) => plumOf(theme.scheme).accentDeep};
+    }
+    .bgroup:hover .glabel em {
+      background-color: ${({ theme }) => plumOf(theme.scheme).accent};
+      color: ${({ theme }) => plumOf(theme.scheme).tagOnInk};
+    }
   }
   .more {
     font-size: 0.6875rem;
@@ -929,6 +962,7 @@ const StyledWrapper = styled.div`
     .gname {
       font-size: 0.75rem;
       color: ${({ theme }) => theme.colors.gray11};
+      transition: color 0.25s ease;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -942,6 +976,7 @@ const StyledWrapper = styled.div`
       border-radius: 999px;
       padding: 0 0.4375rem;
       font-variant-numeric: tabular-nums;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
   }
 
