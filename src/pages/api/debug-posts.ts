@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { CONFIG } from "site.config"
-import { NotionAPI } from "notion-client"
+import { createNotionAPI } from "src/libs/notionApi"
 import { idToUuid } from "notion-utils"
 import getAllPageIds from "src/libs/utils/notion/getAllPageIds"
 import getPageProperties from "src/libs/utils/notion/getPageProperties"
@@ -27,7 +27,7 @@ export default async function handler(
 ) {
   try {
     const rawId = CONFIG.notionConfig.pageId as string
-    const api = new NotionAPI()
+    const api = createNotionAPI()
     const response = await api.getPage(rawId)
     const convertedId = idToUuid(rawId)
 
