@@ -1,4 +1,4 @@
-import { NotionAPI } from "notion-client"
+import { createNotionAPI } from "src/libs/notionApi"
 
 /**
  * Notion API 응답의 새 형식(spaceId 래핑) 정규화
@@ -17,7 +17,7 @@ function normalizeRecordMap(recordMap: any): any {
 }
 
 export const getRecordMap = async (pageId: string) => {
-  const api = new NotionAPI()
+  const api = createNotionAPI()
   const recordMap = await api.getPage(pageId)
 
   // Notion API 응답 정규화 (새 형식 대응)
